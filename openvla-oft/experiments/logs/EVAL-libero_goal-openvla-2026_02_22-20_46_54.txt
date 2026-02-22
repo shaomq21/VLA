@@ -1,0 +1,25 @@
+Task suite: libero_goal
+Using default initial states
+
+Task: open the middle drawer of the cabinet
+Starting episode 1...
+Episode error: mask_one.py returned success but output file missing
+out_path=debug_masked_validation/open_the_middle_drawer_of_the_cabinet.png
+stdout:
+final text_encoder_type: bert-base-uncased
+debug_masked_validation/open_the_middle_drawer_of_the_cabinet.png
+
+stderr:
+FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+UserWarning: Failed to load custom C++ ops. Running on CPU mode Only!
+UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at /opt/conda/conda-bld/pytorch_1708025847130/work/aten/src/ATen/native/TensorShape.cpp:3549.)
+FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+
+
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-20_46_54--openvla_oft--episode=1--success=False--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 1
+# successes: 0 (0.0%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 2...

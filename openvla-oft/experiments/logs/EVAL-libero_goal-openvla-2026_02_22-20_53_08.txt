@@ -1,0 +1,287 @@
+Task suite: libero_goal
+Using default initial states
+
+Task: open the middle drawer of the cabinet
+Starting episode 1...
+Episode error: mask_one.py failed
+cmd: /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python -u /home/ubuntu/16831pro_fine_tune/tools/mask_one.py --image_in /tmp/mask_tmp_8hh4bg3x/in.png --image_out /home/ubuntu/16831pro_fine_tune/debug_masked_validation/open_the_middle_drawer_of_the_cabinet.png --lang open the middle drawer of the cabinet --dino_config /home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py --dino_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/groundingdino_swint_ogc.pth --sam_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/sam_vit_h_4b8939.pth --sam_type vit_h --device cpu
+stdout:
+
+stderr:
+Traceback (most recent call last):
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 8, in <module>
+    from mask_processor import GroundedSAMMasker, GroundedSAMConfig
+ModuleNotFoundError: No module named 'mask_processor'
+
+
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-20_53_08--openvla_oft--episode=1--success=False--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 1
+# successes: 0 (0.0%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 2...
+Episode error: mask_one.py failed
+cmd: /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python -u /home/ubuntu/16831pro_fine_tune/tools/mask_one.py --image_in /tmp/mask_tmp__osx4b1v/in.png --image_out /home/ubuntu/16831pro_fine_tune/debug_masked_validation/open_the_middle_drawer_of_the_cabinet.png --lang open the middle drawer of the cabinet --dino_config /home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py --dino_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/groundingdino_swint_ogc.pth --sam_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/sam_vit_h_4b8939.pth --sam_type vit_h --device cpu
+stdout:
+
+stderr:
+Traceback (most recent call last):
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 8, in <module>
+    from mask_processor import GroundedSAMMasker, GroundedSAMConfig
+ModuleNotFoundError: No module named 'mask_processor'
+
+
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-20_53_08--openvla_oft--episode=2--success=False--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 2
+# successes: 0 (0.0%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 3...
+Episode error: mask_one.py failed
+cmd: /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python -u /home/ubuntu/16831pro_fine_tune/tools/mask_one.py --image_in /tmp/mask_tmp_kbe2kj5d/in.png --image_out /home/ubuntu/16831pro_fine_tune/debug_masked_validation/open_the_middle_drawer_of_the_cabinet.png --lang open the middle drawer of the cabinet --dino_config /home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py --dino_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/groundingdino_swint_ogc.pth --sam_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/sam_vit_h_4b8939.pth --sam_type vit_h --device cpu
+stdout:
+
+stderr:
+Traceback (most recent call last):
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 8, in <module>
+    from mask_processor import GroundedSAMMasker, GroundedSAMConfig
+ModuleNotFoundError: No module named 'mask_processor'
+
+
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-20_53_08--openvla_oft--episode=3--success=False--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 3
+# successes: 0 (0.0%)
+Current task success rate: 0.0
+Current total success rate: 0.0
+Using default initial states
+
+Task: put the bowl on the stove
+Starting episode 1...
+Episode error: mask_one.py failed
+cmd: /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python -u /home/ubuntu/16831pro_fine_tune/tools/mask_one.py --image_in /tmp/mask_tmp_c9hhjj1i/in.png --image_out /home/ubuntu/16831pro_fine_tune/debug_masked_validation/put_the_bowl_on_the_stove.png --lang put the bowl on the stove --dino_config /home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py --dino_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/groundingdino_swint_ogc.pth --sam_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/sam_vit_h_4b8939.pth --sam_type vit_h --device cpu
+stdout:
+
+stderr:
+Traceback (most recent call last):
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 8, in <module>
+    from mask_processor import GroundedSAMMasker, GroundedSAMConfig
+ModuleNotFoundError: No module named 'mask_processor'
+
+
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-20_53_08--openvla_oft--episode=4--success=False--task=put_the_bowl_on_the_stove.mp4
+Success: False
+# episodes completed so far: 4
+# successes: 0 (0.0%)
+
+Task: put the bowl on the stove
+Starting episode 2...
+Episode error: mask_one.py failed
+cmd: /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python -u /home/ubuntu/16831pro_fine_tune/tools/mask_one.py --image_in /tmp/mask_tmp_b5djutqx/in.png --image_out /home/ubuntu/16831pro_fine_tune/debug_masked_validation/put_the_bowl_on_the_stove.png --lang put the bowl on the stove --dino_config /home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py --dino_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/groundingdino_swint_ogc.pth --sam_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/sam_vit_h_4b8939.pth --sam_type vit_h --device cpu
+stdout:
+
+stderr:
+Traceback (most recent call last):
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 8, in <module>
+    from mask_processor import GroundedSAMMasker, GroundedSAMConfig
+ModuleNotFoundError: No module named 'mask_processor'
+
+
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-20_53_08--openvla_oft--episode=5--success=False--task=put_the_bowl_on_the_stove.mp4
+Success: False
+# episodes completed so far: 5
+# successes: 0 (0.0%)
+
+Task: put the bowl on the stove
+Starting episode 3...
+Episode error: mask_one.py failed
+cmd: /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python -u /home/ubuntu/16831pro_fine_tune/tools/mask_one.py --image_in /tmp/mask_tmp_pdmiad7s/in.png --image_out /home/ubuntu/16831pro_fine_tune/debug_masked_validation/put_the_bowl_on_the_stove.png --lang put the bowl on the stove --dino_config /home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py --dino_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/groundingdino_swint_ogc.pth --sam_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/sam_vit_h_4b8939.pth --sam_type vit_h --device cpu
+stdout:
+
+stderr:
+Traceback (most recent call last):
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 8, in <module>
+    from mask_processor import GroundedSAMMasker, GroundedSAMConfig
+ModuleNotFoundError: No module named 'mask_processor'
+
+
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-20_53_08--openvla_oft--episode=6--success=False--task=put_the_bowl_on_the_stove.mp4
+Success: False
+# episodes completed so far: 6
+# successes: 0 (0.0%)
+Current task success rate: 0.0
+Current total success rate: 0.0
+Using default initial states
+
+Task: put the wine bottle on top of the cabinet
+Starting episode 1...
+Episode error: mask_one.py failed
+cmd: /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python -u /home/ubuntu/16831pro_fine_tune/tools/mask_one.py --image_in /tmp/mask_tmp_g_fkdb3g/in.png --image_out /home/ubuntu/16831pro_fine_tune/debug_masked_validation/put_the_wine_bottle_on_top_of_the_cabinet.png --lang put the wine bottle on top of the cabinet --dino_config /home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py --dino_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/groundingdino_swint_ogc.pth --sam_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/sam_vit_h_4b8939.pth --sam_type vit_h --device cpu
+stdout:
+
+stderr:
+Traceback (most recent call last):
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 8, in <module>
+    from mask_processor import GroundedSAMMasker, GroundedSAMConfig
+ModuleNotFoundError: No module named 'mask_processor'
+
+
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-20_53_08--openvla_oft--episode=7--success=False--task=put_the_wine_bottle_on_top_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 7
+# successes: 0 (0.0%)
+
+Task: put the wine bottle on top of the cabinet
+Starting episode 2...
+Episode error: mask_one.py failed
+cmd: /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python -u /home/ubuntu/16831pro_fine_tune/tools/mask_one.py --image_in /tmp/mask_tmp_x4p8k2hb/in.png --image_out /home/ubuntu/16831pro_fine_tune/debug_masked_validation/put_the_wine_bottle_on_top_of_the_cabinet.png --lang put the wine bottle on top of the cabinet --dino_config /home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py --dino_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/groundingdino_swint_ogc.pth --sam_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/sam_vit_h_4b8939.pth --sam_type vit_h --device cpu
+stdout:
+
+stderr:
+Traceback (most recent call last):
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 8, in <module>
+    from mask_processor import GroundedSAMMasker, GroundedSAMConfig
+ModuleNotFoundError: No module named 'mask_processor'
+
+
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-20_53_08--openvla_oft--episode=8--success=False--task=put_the_wine_bottle_on_top_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 8
+# successes: 0 (0.0%)
+
+Task: put the wine bottle on top of the cabinet
+Starting episode 3...
+Episode error: mask_one.py failed
+cmd: /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python -u /home/ubuntu/16831pro_fine_tune/tools/mask_one.py --image_in /tmp/mask_tmp_n18q8zdq/in.png --image_out /home/ubuntu/16831pro_fine_tune/debug_masked_validation/put_the_wine_bottle_on_top_of_the_cabinet.png --lang put the wine bottle on top of the cabinet --dino_config /home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py --dino_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/groundingdino_swint_ogc.pth --sam_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/sam_vit_h_4b8939.pth --sam_type vit_h --device cpu
+stdout:
+
+stderr:
+Traceback (most recent call last):
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 8, in <module>
+    from mask_processor import GroundedSAMMasker, GroundedSAMConfig
+ModuleNotFoundError: No module named 'mask_processor'
+
+
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-20_53_08--openvla_oft--episode=9--success=False--task=put_the_wine_bottle_on_top_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 9
+# successes: 0 (0.0%)
+Current task success rate: 0.0
+Current total success rate: 0.0
+Using default initial states
+
+Task: open the top drawer and put the bowl inside
+Starting episode 1...
+Episode error: mask_one.py failed
+cmd: /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python -u /home/ubuntu/16831pro_fine_tune/tools/mask_one.py --image_in /tmp/mask_tmp_xt0vm3zx/in.png --image_out /home/ubuntu/16831pro_fine_tune/debug_masked_validation/open_the_top_drawer_and_put_the_bowl_inside.png --lang open the top drawer and put the bowl inside --dino_config /home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py --dino_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/groundingdino_swint_ogc.pth --sam_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/sam_vit_h_4b8939.pth --sam_type vit_h --device cpu
+stdout:
+
+stderr:
+Traceback (most recent call last):
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 8, in <module>
+    from mask_processor import GroundedSAMMasker, GroundedSAMConfig
+ModuleNotFoundError: No module named 'mask_processor'
+
+
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-20_53_08--openvla_oft--episode=10--success=False--task=open_the_top_drawer_and_put_the_bowl_inside.mp4
+Success: False
+# episodes completed so far: 10
+# successes: 0 (0.0%)
+
+Task: open the top drawer and put the bowl inside
+Starting episode 2...
+Episode error: mask_one.py failed
+cmd: /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python -u /home/ubuntu/16831pro_fine_tune/tools/mask_one.py --image_in /tmp/mask_tmp_ymfvzo76/in.png --image_out /home/ubuntu/16831pro_fine_tune/debug_masked_validation/open_the_top_drawer_and_put_the_bowl_inside.png --lang open the top drawer and put the bowl inside --dino_config /home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py --dino_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/groundingdino_swint_ogc.pth --sam_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/sam_vit_h_4b8939.pth --sam_type vit_h --device cpu
+stdout:
+
+stderr:
+Traceback (most recent call last):
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 8, in <module>
+    from mask_processor import GroundedSAMMasker, GroundedSAMConfig
+ModuleNotFoundError: No module named 'mask_processor'
+
+
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-20_53_08--openvla_oft--episode=11--success=False--task=open_the_top_drawer_and_put_the_bowl_inside.mp4
+Success: False
+# episodes completed so far: 11
+# successes: 0 (0.0%)
+
+Task: open the top drawer and put the bowl inside
+Starting episode 3...
+Episode error: mask_one.py failed
+cmd: /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python -u /home/ubuntu/16831pro_fine_tune/tools/mask_one.py --image_in /tmp/mask_tmp_sqf_a9ht/in.png --image_out /home/ubuntu/16831pro_fine_tune/debug_masked_validation/open_the_top_drawer_and_put_the_bowl_inside.png --lang open the top drawer and put the bowl inside --dino_config /home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py --dino_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/groundingdino_swint_ogc.pth --sam_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/sam_vit_h_4b8939.pth --sam_type vit_h --device cpu
+stdout:
+
+stderr:
+Traceback (most recent call last):
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 8, in <module>
+    from mask_processor import GroundedSAMMasker, GroundedSAMConfig
+ModuleNotFoundError: No module named 'mask_processor'
+
+
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-20_53_08--openvla_oft--episode=12--success=False--task=open_the_top_drawer_and_put_the_bowl_inside.mp4
+Success: False
+# episodes completed so far: 12
+# successes: 0 (0.0%)
+Current task success rate: 0.0
+Current total success rate: 0.0
+Using default initial states
+
+Task: put the bowl on top of the cabinet
+Starting episode 1...
+Episode error: mask_one.py failed
+cmd: /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python -u /home/ubuntu/16831pro_fine_tune/tools/mask_one.py --image_in /tmp/mask_tmp_9vt29s17/in.png --image_out /home/ubuntu/16831pro_fine_tune/debug_masked_validation/put_the_bowl_on_top_of_the_cabinet.png --lang put the bowl on top of the cabinet --dino_config /home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py --dino_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/groundingdino_swint_ogc.pth --sam_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/sam_vit_h_4b8939.pth --sam_type vit_h --device cpu
+stdout:
+
+stderr:
+Traceback (most recent call last):
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 8, in <module>
+    from mask_processor import GroundedSAMMasker, GroundedSAMConfig
+ModuleNotFoundError: No module named 'mask_processor'
+
+
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-20_53_08--openvla_oft--episode=13--success=False--task=put_the_bowl_on_top_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 13
+# successes: 0 (0.0%)
+
+Task: put the bowl on top of the cabinet
+Starting episode 2...
+Episode error: mask_one.py failed
+cmd: /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python -u /home/ubuntu/16831pro_fine_tune/tools/mask_one.py --image_in /tmp/mask_tmp_1lssdzn6/in.png --image_out /home/ubuntu/16831pro_fine_tune/debug_masked_validation/put_the_bowl_on_top_of_the_cabinet.png --lang put the bowl on top of the cabinet --dino_config /home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py --dino_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/groundingdino_swint_ogc.pth --sam_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/sam_vit_h_4b8939.pth --sam_type vit_h --device cpu
+stdout:
+
+stderr:
+Traceback (most recent call last):
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 8, in <module>
+    from mask_processor import GroundedSAMMasker, GroundedSAMConfig
+ModuleNotFoundError: No module named 'mask_processor'
+
+
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-20_53_08--openvla_oft--episode=14--success=False--task=put_the_bowl_on_top_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 14
+# successes: 0 (0.0%)
+
+Task: put the bowl on top of the cabinet
+Starting episode 3...
+Episode error: mask_one.py failed
+cmd: /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python -u /home/ubuntu/16831pro_fine_tune/tools/mask_one.py --image_in /tmp/mask_tmp_xv_06zod/in.png --image_out /home/ubuntu/16831pro_fine_tune/debug_masked_validation/put_the_bowl_on_top_of_the_cabinet.png --lang put the bowl on top of the cabinet --dino_config /home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py --dino_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/groundingdino_swint_ogc.pth --sam_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/sam_vit_h_4b8939.pth --sam_type vit_h --device cpu
+stdout:
+
+stderr:
+Traceback (most recent call last):
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 8, in <module>
+    from mask_processor import GroundedSAMMasker, GroundedSAMConfig
+ModuleNotFoundError: No module named 'mask_processor'
+
+
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-20_53_08--openvla_oft--episode=15--success=False--task=put_the_bowl_on_top_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 15
+# successes: 0 (0.0%)
+Current task success rate: 0.0
+Current total success rate: 0.0
+Using default initial states

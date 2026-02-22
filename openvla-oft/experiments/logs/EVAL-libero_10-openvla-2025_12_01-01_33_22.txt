@@ -1,0 +1,26 @@
+Task suite: libero_10
+Using default initial states
+
+Task:  pick up the book in the middle and place it on the cabinet shelf
+Starting episode 1...
+Saved rollout MP4 at path ./rollouts/2025_12_01/2025_12_01-01_33_22--openvla_oft--episode=1--success=False--task=_pick_up_the_book_in_the_middle_and_place_it_on_th.mp4
+Success: False
+# episodes completed so far: 1
+# successes: 0 (0.0%)
+
+Task:  pick up the book in the middle and place it on the cabinet shelf
+Starting episode 2...
+Saved rollout MP4 at path ./rollouts/2025_12_01/2025_12_01-01_33_22--openvla_oft--episode=2--success=False--task=_pick_up_the_book_in_the_middle_and_place_it_on_th.mp4
+Success: False
+# episodes completed so far: 2
+# successes: 0 (0.0%)
+
+Task:  pick up the book in the middle and place it on the cabinet shelf
+Starting episode 3...
+Saved rollout MP4 at path ./rollouts/2025_12_01/2025_12_01-01_33_22--openvla_oft--episode=3--success=False--task=_pick_up_the_book_in_the_middle_and_place_it_on_th.mp4
+Success: False
+# episodes completed so far: 3
+# successes: 0 (0.0%)
+
+Task:  pick up the book in the middle and place it on the cabinet shelf
+Starting episode 4...

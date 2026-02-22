@@ -1,0 +1,62 @@
+Task suite: libero_goal
+Using default initial states
+
+Task: open the middle drawer of the cabinet
+Starting episode 1...
+Episode error: mask_one.py failed
+cmd: /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python -u /home/ubuntu/16831pro_fine_tune/tools/mask_one.py --image_in /tmp/mask_tmp_jwjx0rgz/in.png --image_out debug_masked_validation/open_the_middle_drawer_of_the_cabinet.png --lang open the middle drawer of the cabinet --dino_config /home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py --dino_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/groundingdino_swint_ogc.pth --sam_ckpt /home/ubuntu/16831pro_fine_tune/openvla-oft/sam_vit_h_4b8939.pth --sam_type vit_h --device cuda
+stdout:
+final text_encoder_type: bert-base-uncased
+
+stderr:
+FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+UserWarning: Failed to load custom C++ ops. Running on CPU mode Only!
+UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at /opt/conda/conda-bld/pytorch_1708025847130/work/aten/src/ATen/native/TensorShape.cpp:3549.)
+FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+Traceback (most recent call last):
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 41, in <module>
+    main()
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 35, in main
+    out = masker.mask_image_from_lang(img, args.lang)
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_processor.py", line 357, in mask_image_from_lang
+    green_mask = self._segment_points(image_rgb, spec.green_points_xy)
+  File "/home/ubuntu/miniconda3/envs/vla-preprocess/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_processor.py", line 294, in _segment_points
+    self.sam_predictor.set_image(image_rgb)
+  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/segment-anything/segment_anything/predictor.py", line 60, in set_image
+    self.set_torch_image(input_image_torch, image.shape[:2])
+  File "/home/ubuntu/miniconda3/envs/vla-preprocess/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/segment-anything/segment_anything/predictor.py", line 89, in set_torch_image
+    self.features = self.model.image_encoder(input_image)
+  File "/home/ubuntu/miniconda3/envs/vla-preprocess/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/ubuntu/miniconda3/envs/vla-preprocess/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/segment-anything/segment_anything/modeling/image_encoder.py", line 112, in forward
+    x = blk(x)
+  File "/home/ubuntu/miniconda3/envs/vla-preprocess/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/ubuntu/miniconda3/envs/vla-preprocess/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/segment-anything/segment_anything/modeling/image_encoder.py", line 174, in forward
+    x = self.attn(x)
+  File "/home/ubuntu/miniconda3/envs/vla-preprocess/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/ubuntu/miniconda3/envs/vla-preprocess/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/segment-anything/segment_anything/modeling/image_encoder.py", line 234, in forward
+    attn = add_decomposed_rel_pos(attn, q, self.rel_pos_h, self.rel_pos_w, (H, W), (H, W))
+  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/segment-anything/segment_anything/modeling/image_encoder.py", line 358, in add_decomposed_rel_pos
+    attn.view(B, q_h, q_w, k_h, k_w) + rel_h[:, :, :, :, None] + rel_w[:, :, :, None, :]
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 1024.00 MiB. GPU 0 has a total capacity of 22.06 GiB of which 28.38 MiB is free. Process 4498 has 15.39 GiB memory in use. Including non-PyTorch memory, this process has 6.63 GiB memory in use. Of the allocated memory 5.25 GiB is allocated by PyTorch, and 1.08 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+
+
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-20_20_59--openvla_oft--episode=1--success=False--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 1
+# successes: 0 (0.0%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 2...

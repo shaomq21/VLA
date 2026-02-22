@@ -1,0 +1,270 @@
+Task suite: libero_goal
+Using default initial states
+
+Task: open the middle drawer of the cabinet
+Starting episode 1...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=1--success=False--task=open_the_green_masked_drawer_of_the_square_object.mp4
+Success: False
+# episodes completed so far: 1
+# successes: 0 (0.0%)
+
+Task: open the green masked drawer of the square object
+Starting episode 2...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=2--success=False--task=open_the_green_masked_drawer_of_the_square_object.mp4
+Success: False
+# episodes completed so far: 2
+# successes: 0 (0.0%)
+
+Task: open the green masked drawer of the square object
+Starting episode 3...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=3--success=False--task=open_the_green_masked_drawer_of_the_square_object.mp4
+Success: False
+# episodes completed so far: 3
+# successes: 0 (0.0%)
+
+Task: open the green masked drawer of the square object
+Starting episode 4...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=4--success=False--task=open_the_green_masked_drawer_of_the_square_object.mp4
+Success: False
+# episodes completed so far: 4
+# successes: 0 (0.0%)
+
+Task: open the green masked drawer of the square object
+Starting episode 5...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=5--success=False--task=open_the_green_masked_drawer_of_the_square_object.mp4
+Success: False
+# episodes completed so far: 5
+# successes: 0 (0.0%)
+
+Task: open the green masked drawer of the square object
+Starting episode 6...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=6--success=False--task=open_the_green_masked_drawer_of_the_square_object.mp4
+Success: False
+# episodes completed so far: 6
+# successes: 0 (0.0%)
+
+Task: open the green masked drawer of the square object
+Starting episode 7...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=7--success=False--task=open_the_green_masked_drawer_of_the_square_object.mp4
+Success: False
+# episodes completed so far: 7
+# successes: 0 (0.0%)
+
+Task: open the green masked drawer of the square object
+Starting episode 8...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=8--success=False--task=open_the_green_masked_drawer_of_the_square_object.mp4
+Success: False
+# episodes completed so far: 8
+# successes: 0 (0.0%)
+
+Task: open the green masked drawer of the square object
+Starting episode 9...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=9--success=False--task=open_the_green_masked_drawer_of_the_square_object.mp4
+Success: False
+# episodes completed so far: 9
+# successes: 0 (0.0%)
+
+Task: open the green masked drawer of the square object
+Starting episode 10...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=10--success=False--task=open_the_green_masked_drawer_of_the_square_object.mp4
+Success: False
+# episodes completed so far: 10
+# successes: 0 (0.0%)
+Current task success rate: 0.0
+Current total success rate: 0.0
+Using default initial states
+
+Task: put the bowl on the stove
+Starting episode 1...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=11--success=False--task=put_the_red_masked_bowl_on_the_green_masked_flat-s.mp4
+Success: False
+# episodes completed so far: 11
+# successes: 0 (0.0%)
+
+Task: put the red masked bowl on the green masked flat-shaped object
+Starting episode 2...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=12--success=False--task=put_the_red_masked_red_masked_bowl_on_the_green_ma.mp4
+Success: False
+# episodes completed so far: 12
+# successes: 0 (0.0%)
+
+Task: put the red masked red masked bowl on the green masked green masked flat-shaped object
+Starting episode 3...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=13--success=False--task=put_the_red_masked_red_masked_red_masked_bowl_on_t.mp4
+Success: False
+# episodes completed so far: 13
+# successes: 0 (0.0%)
+
+Task: put the red masked red masked red masked bowl on the green masked green masked green masked flat-shaped object
+Starting episode 4...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=14--success=False--task=put_the_red_masked_red_masked_red_masked_red_maske.mp4
+Success: False
+# episodes completed so far: 14
+# successes: 0 (0.0%)
+
+Task: put the red masked red masked red masked red masked bowl on the green masked green masked green masked green masked flat-shaped object
+Starting episode 5...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=15--success=False--task=put_the_red_masked_red_masked_red_masked_red_maske.mp4
+Success: False
+# episodes completed so far: 15
+# successes: 0 (0.0%)
+
+Task: put the red masked red masked red masked red masked red masked bowl on the green masked green masked green masked green masked green masked flat-shaped object
+Starting episode 6...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=16--success=False--task=put_the_red_masked_red_masked_red_masked_red_maske.mp4
+Success: False
+# episodes completed so far: 16
+# successes: 0 (0.0%)
+
+Task: put the red masked red masked red masked red masked red masked red masked bowl on the green masked green masked green masked green masked green masked green masked flat-shaped object
+Starting episode 7...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=17--success=False--task=put_the_red_masked_red_masked_red_masked_red_maske.mp4
+Success: False
+# episodes completed so far: 17
+# successes: 0 (0.0%)
+
+Task: put the red masked red masked red masked red masked red masked red masked red masked bowl on the green masked green masked green masked green masked green masked green masked green masked flat-shaped object
+Starting episode 8...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=18--success=False--task=put_the_red_masked_red_masked_red_masked_red_maske.mp4
+Success: False
+# episodes completed so far: 18
+# successes: 0 (0.0%)
+
+Task: put the red masked red masked red masked red masked red masked red masked red masked red masked bowl on the green masked green masked green masked green masked green masked green masked green masked green masked flat-shaped object
+Starting episode 9...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=19--success=False--task=put_the_red_masked_red_masked_red_masked_red_maske.mp4
+Success: False
+# episodes completed so far: 19
+# successes: 0 (0.0%)
+
+Task: put the red masked red masked red masked red masked red masked red masked red masked red masked red masked bowl on the green masked green masked green masked green masked green masked green masked green masked green masked green masked flat-shaped object
+Starting episode 10...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=20--success=False--task=put_the_red_masked_red_masked_red_masked_red_maske.mp4
+Success: False
+# episodes completed so far: 20
+# successes: 0 (0.0%)
+Current task success rate: 0.0
+Current total success rate: 0.0
+Using default initial states
+
+Task: put the wine bottle on top of the cabinet
+Starting episode 1...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=21--success=False--task=put_the_red_masked_wine_bottle_on_on_top_of_the_gr.mp4
+Success: False
+# episodes completed so far: 21
+# successes: 0 (0.0%)
+
+Task: put the red masked wine bottle on on top of the green masked square object
+Starting episode 2...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=22--success=False--task=put_the_red_masked_red_masked_wine_bottle_on_on_on.mp4
+Success: False
+# episodes completed so far: 22
+# successes: 0 (0.0%)
+
+Task: put the red masked red masked wine bottle on on on top of the green masked green masked square object
+Starting episode 3...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=23--success=False--task=put_the_red_masked_red_masked_red_masked_wine_bott.mp4
+Success: False
+# episodes completed so far: 23
+# successes: 0 (0.0%)
+
+Task: put the red masked red masked red masked wine bottle on on on on top of the green masked green masked green masked square object
+Starting episode 4...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=24--success=False--task=put_the_red_masked_red_masked_red_masked_red_maske.mp4
+Success: False
+# episodes completed so far: 24
+# successes: 0 (0.0%)
+
+Task: put the red masked red masked red masked red masked wine bottle on on on on on top of the green masked green masked green masked green masked square object
+Starting episode 5...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=25--success=False--task=put_the_red_masked_red_masked_red_masked_red_maske.mp4
+Success: False
+# episodes completed so far: 25
+# successes: 0 (0.0%)
+
+Task: put the red masked red masked red masked red masked red masked wine bottle on on on on on on top of the green masked green masked green masked green masked green masked square object
+Starting episode 6...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=26--success=False--task=put_the_red_masked_red_masked_red_masked_red_maske.mp4
+Success: False
+# episodes completed so far: 26
+# successes: 0 (0.0%)
+
+Task: put the red masked red masked red masked red masked red masked red masked wine bottle on on on on on on on top of the green masked green masked green masked green masked green masked green masked square object
+Starting episode 7...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=27--success=False--task=put_the_red_masked_red_masked_red_masked_red_maske.mp4
+Success: False
+# episodes completed so far: 27
+# successes: 0 (0.0%)
+
+Task: put the red masked red masked red masked red masked red masked red masked red masked wine bottle on on on on on on on on top of the green masked green masked green masked green masked green masked green masked green masked square object
+Starting episode 8...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=28--success=False--task=put_the_red_masked_red_masked_red_masked_red_maske.mp4
+Success: False
+# episodes completed so far: 28
+# successes: 0 (0.0%)
+
+Task: put the red masked red masked red masked red masked red masked red masked red masked red masked wine bottle on on on on on on on on on top of the green masked green masked green masked green masked green masked green masked green masked green masked square object
+Starting episode 9...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=29--success=False--task=put_the_red_masked_red_masked_red_masked_red_maske.mp4
+Success: False
+# episodes completed so far: 29
+# successes: 0 (0.0%)
+
+Task: put the red masked red masked red masked red masked red masked red masked red masked red masked red masked wine bottle on on on on on on on on on on top of the green masked green masked green masked green masked green masked green masked green masked green masked green masked square object
+Starting episode 10...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=30--success=False--task=put_the_red_masked_red_masked_red_masked_red_maske.mp4
+Success: False
+# episodes completed so far: 30
+# successes: 0 (0.0%)
+Current task success rate: 0.0
+Current total success rate: 0.0
+Using default initial states
+
+Task: open the top drawer and put the bowl inside
+Starting episode 1...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=31--success=False--task=open_the_green_masked_drawer_and_put_the_bowl_insi.mp4
+Success: False
+# episodes completed so far: 31
+# successes: 0 (0.0%)
+
+Task: open the green masked drawer and put the bowl inside
+Starting episode 2...
+Episode error: 'numpy.ndarray' object has no attribute 'convert'
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-19_58_37--openvla_oft--episode=32--success=False--task=open_the_green_masked_drawer_and_put_the_bowl_insi.mp4
+Success: False
+# episodes completed so far: 32
+# successes: 0 (0.0%)
+
+Task: open the green masked drawer and put the bowl inside
+Starting episode 3...

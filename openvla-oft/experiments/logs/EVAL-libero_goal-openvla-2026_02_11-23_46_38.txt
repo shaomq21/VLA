@@ -1,0 +1,19 @@
+Task suite: libero_goal
+Using default initial states
+
+Task: open the center drawer of the the righmost square object, away from the edge
+Starting episode 1...
+Saved rollout MP4 at path ./rollouts/2026_02_11/2026_02_11-23_46_38--openvla_oft--episode=1--success=False--task=open_the_center_drawer_of_the_the_righmost_square_.mp4
+Success: False
+# episodes completed so far: 1
+# successes: 0 (0.0%)
+
+Task: open the center drawer of the the righmost square object, away from the edge
+Starting episode 2...
+Saved rollout MP4 at path ./rollouts/2026_02_11/2026_02_11-23_46_38--openvla_oft--episode=2--success=False--task=open_the_center_drawer_of_the_the_righmost_square_.mp4
+Success: False
+# episodes completed so far: 2
+# successes: 0 (0.0%)
+
+Task: open the center drawer of the the righmost square object, away from the edge
+Starting episode 3...

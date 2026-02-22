@@ -1,0 +1,45 @@
+Task suite: libero_goal
+Using default initial states
+
+Task: open the middle drawer of the cabinet
+Starting episode 1...
+Episode error: local variable 'task_object' referenced before assignment
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-20_40_09--openvla_oft--episode=1--success=False--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 1
+# successes: 0 (0.0%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 2...
+Episode error: local variable 'task_object' referenced before assignment
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-20_40_09--openvla_oft--episode=2--success=False--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 2
+# successes: 0 (0.0%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 3...
+Episode error: local variable 'task_object' referenced before assignment
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-20_40_09--openvla_oft--episode=3--success=False--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 3
+# successes: 0 (0.0%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 4...
+Episode error: local variable 'task_object' referenced before assignment
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-20_40_09--openvla_oft--episode=4--success=False--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 4
+# successes: 0 (0.0%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 5...
+Episode error: local variable 'task_object' referenced before assignment
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-20_40_09--openvla_oft--episode=5--success=False--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 5
+# successes: 0 (0.0%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 6...

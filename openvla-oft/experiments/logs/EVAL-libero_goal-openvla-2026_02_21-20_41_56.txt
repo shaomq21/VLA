@@ -1,0 +1,21 @@
+Task suite: libero_goal
+Using default initial states
+
+Task: open the middle drawer of the cabinet
+Starting episode 1...
+Episode error: local variable 'proc_task_description' referenced before assignment
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-20_41_56--openvla_oft--episode=1--success=False--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 1
+# successes: 0 (0.0%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 2...
+Episode error: local variable 'proc_task_description' referenced before assignment
+Saved rollout MP4 at path ./rollouts/2026_02_21/2026_02_21-20_41_56--openvla_oft--episode=2--success=False--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 2
+# successes: 0 (0.0%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 3...

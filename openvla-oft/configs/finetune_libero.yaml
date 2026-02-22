@@ -1,0 +1,13 @@
+python vla-scripts/finetune.py \
+--vla_path "openvla-7b" \
+--data_root_dir="/home/hongyi/16831pro_fine_tune/openvla-oft/modified_libero_rlds" \
+--dataset_name="libero_object_no_noops" \
+--run_root_dir "/home/hongyi/16831pro/vla_logs" \
+--lora_rank 32 \
+--use_l1_regression True \
+--batch_size 2 \
+--grad_accumulation_steps 2 \
+--learning_rate 3e-4 \
+--image_aug False \
+--save_freq 1000 \
+--wandb_log_freq 100000000

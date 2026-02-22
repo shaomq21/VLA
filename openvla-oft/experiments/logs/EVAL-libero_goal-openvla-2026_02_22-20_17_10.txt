@@ -1,0 +1,73 @@
+Task suite: libero_goal
+Using default initial states
+
+Task: open the middle drawer of the cabinet
+Starting episode 1...
+Episode error: mask_one.py failed
+cmd: /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python -u /home/ubuntu/16831pro_fine_tune/tools/mask_one.py --image_in /tmp/mask_tmp_qqexjevz/in.png --image_out debug_masked_validation/open_the_middle_drawer_of_the_cabinet.png --lang open the middle drawer of the cabinet --dino_config /home/ubuntu/16831pro_fine_tune/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py --dino_ckpt /home/ubuntu/16831pro_fine_tune/groundingdino_swint_ogc.pth --sam_ckpt /home/ubuntu/16831pro_fine_tune/sam_vit_h_4b8939.pth --sam_type vit_h --device cuda
+stdout:
+
+stderr:
+FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+UserWarning: Failed to load custom C++ ops. Running on CPU mode Only!
+Traceback (most recent call last):
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 41, in <module>
+    main()
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 32, in main
+    masker = GroundedSAMMasker(cfg)
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_processor.py", line 219, in __init__
+    self.dino = GroundingDINOModel(
+  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/util/inference.py", line 145, in __init__
+    self.model = load_model(
+  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/util/inference.py", line 30, in load_model
+    args = SLConfig.fromfile(model_config_path)
+  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/util/slconfig.py", line 185, in fromfile
+    cfg_dict, cfg_text = SLConfig._file2dict(filename)
+  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/util/slconfig.py", line 79, in _file2dict
+    check_file_exist(filename)
+  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/util/slconfig.py", line 23, in check_file_exist
+    raise FileNotFoundError(msg_tmpl.format(filename))
+FileNotFoundError: file "/home/ubuntu/16831pro_fine_tune/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py" does not exist
+
+
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-20_17_10--openvla_oft--episode=1--success=False--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 1
+# successes: 0 (0.0%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 2...
+Episode error: mask_one.py failed
+cmd: /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python -u /home/ubuntu/16831pro_fine_tune/tools/mask_one.py --image_in /tmp/mask_tmp_l8ygicxy/in.png --image_out debug_masked_validation/open_the_middle_drawer_of_the_cabinet.png --lang open the middle drawer of the cabinet --dino_config /home/ubuntu/16831pro_fine_tune/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py --dino_ckpt /home/ubuntu/16831pro_fine_tune/groundingdino_swint_ogc.pth --sam_ckpt /home/ubuntu/16831pro_fine_tune/sam_vit_h_4b8939.pth --sam_type vit_h --device cuda
+stdout:
+
+stderr:
+FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+UserWarning: Failed to load custom C++ ops. Running on CPU mode Only!
+Traceback (most recent call last):
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 41, in <module>
+    main()
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_one.py", line 32, in main
+    masker = GroundedSAMMasker(cfg)
+  File "/home/ubuntu/16831pro_fine_tune/tools/mask_processor.py", line 219, in __init__
+    self.dino = GroundingDINOModel(
+  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/util/inference.py", line 145, in __init__
+    self.model = load_model(
+  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/util/inference.py", line 30, in load_model
+    args = SLConfig.fromfile(model_config_path)
+  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/util/slconfig.py", line 185, in fromfile
+    cfg_dict, cfg_text = SLConfig._file2dict(filename)
+  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/util/slconfig.py", line 79, in _file2dict
+    check_file_exist(filename)
+  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/GroundingDINO/groundingdino/util/slconfig.py", line 23, in check_file_exist
+    raise FileNotFoundError(msg_tmpl.format(filename))
+FileNotFoundError: file "/home/ubuntu/16831pro_fine_tune/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py" does not exist
+
+
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-20_17_10--openvla_oft--episode=2--success=False--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 2
+# successes: 0 (0.0%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 3...

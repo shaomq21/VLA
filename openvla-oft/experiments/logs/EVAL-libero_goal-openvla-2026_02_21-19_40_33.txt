@@ -1,0 +1,2 @@
+Task suite: libero_goal
+Using default initial states

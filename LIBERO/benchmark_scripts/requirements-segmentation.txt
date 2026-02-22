@@ -1,0 +1,12 @@
+numpy>=1.23
+Pillow>=9.5
+opencv-python>=4.8
+torch>=2.1
+transformers>=4.43
+
+# Optional (only if you want --seg_backend sam)
+# The official 'segment-anything' is typically installed from GitHub:
+# git+https://github.com/facebookresearch/segment-anything.git
+# If you need a wheel/pip release, use a maintained fork that provides one, or install manually.
+
+

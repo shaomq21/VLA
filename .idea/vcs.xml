@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/LIBERO" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/SimpleVLA-RL" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/SimpleVLA-RL/Openvla-oft-SFT-libero10-trajall" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/SimpleVLA-RL/flash-attention" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/SimpleVLA-RL/flash-attention/csrc/composable_kernel" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/SimpleVLA-RL/flash-attention/csrc/cutlass" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/openvla-oft" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/verl" vcs="Git" />
+  </component>
+</project>

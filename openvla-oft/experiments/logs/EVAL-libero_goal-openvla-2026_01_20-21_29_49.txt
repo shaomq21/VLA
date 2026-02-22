@@ -1,0 +1,245 @@
+Task suite: libero_goal
+Using default initial states
+
+Task: open the middle drawer of the cabinet
+Starting episode 1...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=1--success=True--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: True
+# episodes completed so far: 1
+# successes: 1 (100.0%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 2...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=2--success=True--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: True
+# episodes completed so far: 2
+# successes: 2 (100.0%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 3...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=3--success=True--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: True
+# episodes completed so far: 3
+# successes: 3 (100.0%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 4...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=4--success=False--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 4
+# successes: 3 (75.0%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 5...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=5--success=True--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: True
+# episodes completed so far: 5
+# successes: 4 (80.0%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 6...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=6--success=False--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 6
+# successes: 4 (66.7%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 7...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=7--success=True--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: True
+# episodes completed so far: 7
+# successes: 5 (71.4%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 8...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=8--success=True--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: True
+# episodes completed so far: 8
+# successes: 6 (75.0%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 9...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=9--success=True--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: True
+# episodes completed so far: 9
+# successes: 7 (77.8%)
+
+Task: open the middle drawer of the cabinet
+Starting episode 10...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=10--success=False--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 10
+# successes: 7 (70.0%)
+Current task success rate: 0.7
+Current total success rate: 0.7
+Using default initial states
+
+Task: put the bowl on the stove
+Starting episode 1...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=11--success=False--task=put_the_bowl_on_the_stove.mp4
+Success: False
+# episodes completed so far: 11
+# successes: 7 (63.6%)
+
+Task: put the bowl on the stove
+Starting episode 2...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=12--success=True--task=put_the_bowl_on_the_stove.mp4
+Success: True
+# episodes completed so far: 12
+# successes: 8 (66.7%)
+
+Task: put the bowl on the stove
+Starting episode 3...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=13--success=True--task=put_the_bowl_on_the_stove.mp4
+Success: True
+# episodes completed so far: 13
+# successes: 9 (69.2%)
+
+Task: put the bowl on the stove
+Starting episode 4...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=14--success=True--task=put_the_bowl_on_the_stove.mp4
+Success: True
+# episodes completed so far: 14
+# successes: 10 (71.4%)
+
+Task: put the bowl on the stove
+Starting episode 5...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=15--success=True--task=put_the_bowl_on_the_stove.mp4
+Success: True
+# episodes completed so far: 15
+# successes: 11 (73.3%)
+
+Task: put the bowl on the stove
+Starting episode 6...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=16--success=True--task=put_the_bowl_on_the_stove.mp4
+Success: True
+# episodes completed so far: 16
+# successes: 12 (75.0%)
+
+Task: put the bowl on the stove
+Starting episode 7...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=17--success=True--task=put_the_bowl_on_the_stove.mp4
+Success: True
+# episodes completed so far: 17
+# successes: 13 (76.5%)
+
+Task: put the bowl on the stove
+Starting episode 8...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=18--success=True--task=put_the_bowl_on_the_stove.mp4
+Success: True
+# episodes completed so far: 18
+# successes: 14 (77.8%)
+
+Task: put the bowl on the stove
+Starting episode 9...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=19--success=True--task=put_the_bowl_on_the_stove.mp4
+Success: True
+# episodes completed so far: 19
+# successes: 15 (78.9%)
+
+Task: put the bowl on the stove
+Starting episode 10...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=20--success=True--task=put_the_bowl_on_the_stove.mp4
+Success: True
+# episodes completed so far: 20
+# successes: 16 (80.0%)
+Current task success rate: 0.9
+Current total success rate: 0.8
+Using default initial states
+
+Task: put the wine bottle on top of the cabinet
+Starting episode 1...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=21--success=True--task=put_the_wine_bottle_on_top_of_the_cabinet.mp4
+Success: True
+# episodes completed so far: 21
+# successes: 17 (81.0%)
+
+Task: put the wine bottle on top of the cabinet
+Starting episode 2...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=22--success=True--task=put_the_wine_bottle_on_top_of_the_cabinet.mp4
+Success: True
+# episodes completed so far: 22
+# successes: 18 (81.8%)
+
+Task: put the wine bottle on top of the cabinet
+Starting episode 3...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=23--success=True--task=put_the_wine_bottle_on_top_of_the_cabinet.mp4
+Success: True
+# episodes completed so far: 23
+# successes: 19 (82.6%)
+
+Task: put the wine bottle on top of the cabinet
+Starting episode 4...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=24--success=True--task=put_the_wine_bottle_on_top_of_the_cabinet.mp4
+Success: True
+# episodes completed so far: 24
+# successes: 20 (83.3%)
+
+Task: put the wine bottle on top of the cabinet
+Starting episode 5...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=25--success=True--task=put_the_wine_bottle_on_top_of_the_cabinet.mp4
+Success: True
+# episodes completed so far: 25
+# successes: 21 (84.0%)
+
+Task: put the wine bottle on top of the cabinet
+Starting episode 6...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=26--success=True--task=put_the_wine_bottle_on_top_of_the_cabinet.mp4
+Success: True
+# episodes completed so far: 26
+# successes: 22 (84.6%)
+
+Task: put the wine bottle on top of the cabinet
+Starting episode 7...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=27--success=True--task=put_the_wine_bottle_on_top_of_the_cabinet.mp4
+Success: True
+# episodes completed so far: 27
+# successes: 23 (85.2%)
+
+Task: put the wine bottle on top of the cabinet
+Starting episode 8...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=28--success=True--task=put_the_wine_bottle_on_top_of_the_cabinet.mp4
+Success: True
+# episodes completed so far: 28
+# successes: 24 (85.7%)
+
+Task: put the wine bottle on top of the cabinet
+Starting episode 9...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=29--success=False--task=put_the_wine_bottle_on_top_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 29
+# successes: 24 (82.8%)
+
+Task: put the wine bottle on top of the cabinet
+Starting episode 10...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=30--success=True--task=put_the_wine_bottle_on_top_of_the_cabinet.mp4
+Success: True
+# episodes completed so far: 30
+# successes: 25 (83.3%)
+Current task success rate: 0.9
+Current total success rate: 0.8333333333333334
+Using default initial states
+
+Task: open the top drawer and put the bowl inside
+Starting episode 1...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=31--success=False--task=open_the_top_drawer_and_put_the_bowl_inside.mp4
+Success: False
+# episodes completed so far: 31
+# successes: 25 (80.6%)
+
+Task: open the top drawer and put the bowl inside
+Starting episode 2...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=32--success=False--task=open_the_top_drawer_and_put_the_bowl_inside.mp4
+Success: False
+# episodes completed so far: 32
+# successes: 25 (78.1%)
+
+Task: open the top drawer and put the bowl inside
+Starting episode 3...
+Saved rollout MP4 at path ./rollouts/2026_01_20/2026_01_20-21_29_49--openvla_oft--episode=33--success=False--task=open_the_top_drawer_and_put_the_bowl_inside.mp4
+Success: False
+# episodes completed so far: 33
+# successes: 25 (75.8%)
+
+Task: open the top drawer and put the bowl inside
+Starting episode 4...
