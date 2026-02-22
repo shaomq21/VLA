@@ -1,0 +1,25 @@
+Task suite: libero_goal
+Using default initial states
+
+Task: open the middle drawer of the cabinet
+Starting episode 1...
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-22_36_13--openvla_oft--episode=1--success=False--task=open_the_middle_drawer_of_the_cabinet.mp4
+Success: False
+# episodes completed so far: 1
+# successes: 0 (0.0%)
+Current task success rate: 0.0
+Current total success rate: 0.0
+Using default initial states
+
+Task: put the bowl on the stove
+Starting episode 1...
+Saved rollout MP4 at path ./rollouts/2026_02_22/2026_02_22-22_36_13--openvla_oft--episode=2--success=False--task=put_the_bowl_on_the_stove.mp4
+Success: False
+# episodes completed so far: 2
+# successes: 0 (0.0%)
+Current task success rate: 0.0
+Current total success rate: 0.0
+Using default initial states
+
+Task: put the wine bottle on top of the cabinet
+Starting episode 1...

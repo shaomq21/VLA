@@ -65,4 +65,8 @@ python experiments/robot/libero/run_libero_eval_mask.py \
   --pretrained_checkpoint "/home/ubuntu/runs/openvla/openvla-7b-oft-finetuned-libero-goal+libero_goal_no_noops+b4+lr-0.0005+lora-r32+dropout-0.0--image_aug--1700_chkpt" \
   --task_suite_name libero_goal
 
-   
+git pull
+
+git add .
+git commit -m "today progress"
+git push

@@ -140,7 +140,7 @@ class GenerateConfig:
     #################################################################################################################
     task_suite_name: str = TaskSuite.LIBERO_GOAL  # Task suite
     num_steps_wait: int = 10                         # Number of steps to wait for objects to stabilize in sim
-    num_trials_per_task: int = 3                    # Number of rollouts per task
+    num_trials_per_task: int = 1                    # Number of rollouts per task
     initial_states_path: str = "DEFAULT"             # "DEFAULT", or path to initial states JSON file
     env_img_res: int = 256                           # Resolution for environment images (not policy input resolution)
 
