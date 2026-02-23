@@ -68,5 +68,5 @@ python experiments/robot/libero/run_libero_eval_mask.py \
 git pull
 
 git add .
-git commit -m "today progress"
+git commit -m "add_rlds_processor"
 git push

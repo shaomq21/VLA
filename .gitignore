@@ -1,46 +1,29 @@
-# ==================================================
-# MODEL / CHECKPOINTS
-# ==================================================
-*.pth
-*.pt
-*.ckpt
-*.safetensors
-*.tar
-*.tar.gz
 
-# ==================================================
-# RLDS / DATASETS (🔥 VERY IMPORTANT)
-# ==================================================
-datasets/
-data/
-rlds/
-*libero_rlds*
-*modified_libero_rlds*
-*masked_libero_rlds*
-*.tfrecord
-*.npz
-*.hdf5
 *.pkl
-
-# ==================================================
-# TRAINING OUTPUT
-# ==================================================
-runs/
-checkpoints/
-experiments/logs/
-wandb/
-outputs/
-
-# ==================================================
-# DEBUG / TEMP
-# ==================================================
-debug_masked/
-debug_points/
-tmp/
-cache/
-
-# ==================================================
-# PYTHON CACHE
-# ==================================================
+# ======================
+# Python cache
+# ======================
 __pycache__/
 *.pyc
+
+# ======================
+# Training outputs (checkpoints)
+# ======================
+runs/
+*chkpt/
+*.ckpt
+*.pt
+*.pth
+*.safetensors
+
+# ======================
+# Large datasets
+# ======================
+*_rlds/
+modified_libero_rlds/
+
+# ======================
+# Logs
+# ======================
+wandb/
+*.log
