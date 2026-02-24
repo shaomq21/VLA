@@ -30,7 +30,7 @@ from torch.utils.data import DataLoader
 from transformers import AutoConfig, AutoImageProcessor, AutoModelForVision2Seq, AutoProcessor
 from transformers.modeling_outputs import CausalLMOutputWithPast
 
-#import wandb
+import wandb
 
 from experiments.robot.openvla_utils import (
     check_model_logic_mismatch,

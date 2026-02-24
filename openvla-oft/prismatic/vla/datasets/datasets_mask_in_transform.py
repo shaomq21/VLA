@@ -90,13 +90,7 @@ def language_mask_processor(lang: str) -> str:
     return s
 
 import subprocess, tempfile, os
-import re
 from PIL import Image
-
-# 调试：保存图片供检查。设置环境变量启用：DATASET_DEBUG_SAVE=1, DATASET_DEBUG_SAVE_EVERY=200
-_DATASET_DEBUG_SAVE = os.environ.get("DATASET_DEBUG_SAVE", "0") == "1"
-_DATASET_DEBUG_SAVE_EVERY = int(os.environ.get("DATASET_DEBUG_SAVE_EVERY", "200"))
-_DATASET_DEBUG_COUNTER = [0]  # 用 list 以便在闭包中修改
 
 VLA_PREPROCESS_PY = "/home/ubuntu/miniconda3/envs/vla-preprocess/bin/python"  
 
@@ -189,10 +183,22 @@ class RLDSBatchTransform:
         lang = rlds_batch["task"]["language_instruction"].decode().lower()
         lang_object = None
 
-        
+        #process masked image
+        lang_object = lang
         lang = language_mask_processor(lang)
 
         
+        safe_name = lang_object.replace(" ", "_").replace("/", "_")
+        out_path = f"debug_masked/{safe_name}.png"
+        os.makedirs("debug_masked", exist_ok=True)
+
+        img = mask_image_via_other_env(img.convert("RGB"), lang_object, out_path)
+       
+
+            
+
+
+          
 
         actions = rlds_batch["action"]
 
@@ -228,16 +234,6 @@ class RLDSBatchTransform:
         labels[: -(action_chunk_len + 1)] = IGNORE_INDEX
         if not self.predict_stop_token:
             labels[-1] = IGNORE_INDEX
-
-        # 调试：每隔 N 步保存图片供检查
-        if _DATASET_DEBUG_SAVE:
-            _DATASET_DEBUG_COUNTER[0] += 1
-            if _DATASET_DEBUG_COUNTER[0] % _DATASET_DEBUG_SAVE_EVERY == 1:
-                debug_dir = Path(__file__).resolve().parents[3] / "dataset_debug"
-                debug_dir.mkdir(parents=True, exist_ok=True)
-                safe = re.sub(r"[^a-zA-Z0-9_]+", "_", lang)[:80]
-                out_path = debug_dir / f"step{_DATASET_DEBUG_COUNTER[0]:06d}_{safe}.png"
-                img.save(out_path)
 
         return_dict = dict(pixel_values=pixel_values, input_ids=input_ids, labels=labels, dataset_name=dataset_name, actions=actions)
 

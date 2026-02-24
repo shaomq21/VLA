@@ -184,8 +184,8 @@ class GroundedSAMConfig:
     sam_checkpoint_path: str = ""
 
     # Gripper detection via Roboflow (optional)
-    # Model: https://app.roboflow.com/margarets-workspace/gripper_box/models
-    gripper_model_id: Optional[str] = "margarets-workspace/gripper_box/1"
+    # Model: 需在 app.roboflow.com 创建，格式 workspace/project/version
+    gripper_model_id: Optional[str] = "gripper_box/1"
     gripper_enabled: bool = True
 
     device: str = "cuda"
@@ -454,7 +454,10 @@ class GroundedSAMMasker:
             try:
                 gripper_centers = _detect_gripper_centers(image_rgb, self.cfg.gripper_model_id)
                 if gripper_centers:
-                    out = _draw_white_dots(out, gripper_centers, radius=12)
+                    H, W = image_rgb.shape[:2]
+                    # 按图像尺寸缩放半径，256x256 时约 5px，避免 LIBERO 小图上点过大
+                    radius = max(2, min(5, min(H, W) // 70))
+                    out = _draw_white_dots(out, gripper_centers, radius=radius)
             except Exception as e:
                 import warnings
                 warnings.warn(f"Gripper detection failed: {e}")

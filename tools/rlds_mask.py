@@ -32,7 +32,9 @@ else:
     sys.path.insert(0, str(_OPENVLA_ROOT.parent))
     sys.path.insert(0, str(_OPENVLA_ROOT))
 
+print("[rlds_mask] Importing mask_processor...", flush=True)
 from mask_processor import GroundedSAMConfig, GroundedSAMMasker
+print("[rlds_mask] Imports done.", flush=True)
 
 # Default paths (override via args or env)
 DEFAULT_DATA_ROOT = os.environ.get("RLDS_DATA_ROOT", str(_REPO_ROOT / "openvla-oft/datasets/modified_libero_rlds"))
@@ -100,6 +102,16 @@ def _mask_episode_steps(episode, masker, mask_wrist=True):
 
 
 def main():
+    import traceback
+    try:
+        _main()
+    except Exception as e:
+        traceback.print_exc()
+        sys.exit(1)
+
+
+def _main():
+    print("[rlds_mask] _main() started.", flush=True)
     parser = argparse.ArgumentParser(description="Apply Grounded-SAM masks to RLDS dataset; output TFRecord for training")
     parser.add_argument("--data_root", type=str, default=DEFAULT_DATA_ROOT, help="RLDS data root (input)")
     parser.add_argument("--out_root", type=str, default=DEFAULT_OUT_ROOT, help="Output root for masked TFRecord")
@@ -114,7 +126,8 @@ def main():
     parser.add_argument("--sam_type", type=str, default="vit_b",
         help="SAM backbone: vit_b (fast) | vit_l | vit_h (slowest, best)")
     parser.add_argument("--device", type=str, default="cuda")
-    parser.add_argument("--debug_dir", type=str, default=None, help="Optional: save sample masked images for inspection")
+    parser.add_argument("--debug_dir", type=str, default="rlds_mask_debug", help="Save sample masked images for inspection")
+    parser.add_argument("--debug_every", type=int, default=200, help="Save a sample masked image every N steps (default 200)")
     args = parser.parse_args()
 
     _ensure_tf_cpu()
@@ -148,8 +161,9 @@ def main():
         sam_type=args.sam_type,
         device=args.device,
     )
-    print("Loading GroundedSAM...")
+    print("Loading GroundedSAM...", flush=True)
     masker = GroundedSAMMasker(cfg)
+    print("GroundedSAM loaded.", flush=True)
 
     # Load RLDS at episode level
     builder = tfds.builder(args.data_mix, data_dir=str(data_root))
@@ -187,20 +201,25 @@ def main():
     shard_counts = [0] * n_shards
 
     features = builder.info.features
-    debug_count = 0
+    from tensorflow_datasets.core import example_serializer
+    example_serializer_obj = example_serializer.ExampleSerializer(features.get_serialized_info())
+    total_steps = 0
+    next_save_at = args.debug_every
 
     try:
         for ep_idx, episode in enumerate(tqdm(ds, total=total_to_process, desc="RLDS mask")):
             global_ep = resume_from + ep_idx
             modified_steps = _mask_episode_steps(episode, masker, mask_wrist=not args.no_mask_wrist)
+            steps_this_ep = len(modified_steps)
             ep_meta_raw = episode.get("episode_metadata")
             ep_metadata = {}
             if ep_meta_raw is not None:
                 try:
-                    if hasattr(ep_meta_raw, "numpy"):
-                        ep_meta_raw = ep_meta_raw.numpy()
-                    if isinstance(ep_meta_raw, dict):
-                        ep_metadata = {k: _to_numpy(v) for k, v in ep_meta_raw.items()}
+                    raw = ep_meta_raw.numpy() if hasattr(ep_meta_raw, "numpy") else ep_meta_raw
+                    if isinstance(raw, dict):
+                        ep_metadata = {k: _to_numpy(v) for k, v in raw.items()}
+                    elif isinstance(raw, (bytes, str)):
+                        ep_metadata = {"file_path": raw if isinstance(raw, bytes) else raw.encode()}
                 except Exception:
                     pass
             modified_episode = {
@@ -211,21 +230,23 @@ def main():
             if isinstance(encoded, bytes):
                 serialized = encoded
             elif isinstance(encoded, dict):
-                example = tf.train.Example(features=tf.train.Features(feature=encoded))
-                serialized = example.SerializeToString()
+                serialized = example_serializer_obj.serialize_example(encoded)
             else:
                 serialized = encoded  # hope it's bytes-like
             shard_id = global_ep % n_shards
             writers[shard_id].write(serialized)
             shard_counts[shard_id] += 1
 
-            if args.debug_dir and debug_count < 20:
+            # 每隔 debug_every 步保存一张 mask 后的图片供检查
+            if args.debug_dir and total_steps < next_save_at <= total_steps + steps_this_ep:
                 first_step = modified_steps[0]
                 img_arr = first_step["observation"]["image"]
                 if img_arr is not None and img_arr.size > 0:
                     img = Image.fromarray(img_arr)
-                    img.save(Path(args.debug_dir) / f"ep{global_ep:05d}_masked.png")
-                    debug_count += 1
+                    img.save(Path(args.debug_dir) / f"step{next_save_at:06d}_ep{global_ep:05d}_masked.png")
+                next_save_at += args.debug_every
+
+            total_steps += steps_this_ep
 
             if (ep_idx + 1) % SAVE_PROGRESS_EVERY == 0:
                 with open(resume_file, "w") as f:
@@ -263,3 +284,7 @@ def main():
     print("DONE. Output:", out_dir)
     print("TFRecord files:", [str(p) for p in shard_files])
     print("Directly usable for training with --data_root", out_root)
+
+
+if __name__ == "__main__":
+    main()

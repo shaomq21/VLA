@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-set -u  # 不 set -e：训练崩了要继续循环
+set -u  
 
 RUN_ROOT="/home/ubuntu/runs/openvla"
-DATA_ROOT="/home/ubuntu/16831pro_fine_tune/openvla-oft/datasets/modified_libero_rlds"
+DATA_ROOT="/home/ubuntu/16831pro_fine_tune/openvla-oft/datasets/masked_libero_rlds"
 
 DATASET_NAME="libero_goal_no_noops"
 

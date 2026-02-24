@@ -71,3 +71,4 @@ git commit -m "add_rlds_processor"
 git push
 
 
+python tools/rlds_mask.py --data_mix libero_goal_no_noops --debug_dir rlds_mask_debug --debug_every 200 --no_mask_wrist 
