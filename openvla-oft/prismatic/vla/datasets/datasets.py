@@ -116,8 +116,8 @@ DEVICE      = "cuda"
 def mask_image_via_other_env(img_pil: Image.Image, lang: str, out_path: str) -> Image.Image:
     print("---activate env vla-preprocess---")
 
-    env = os.environ.copy()
-    env["CUDA_VISIBLE_DEVICES"] = "2"   
+    #env = os.environ.copy()
+    #env["CUDA_VISIBLE_DEVICES"] = "2"   
     for k in ["WORLD_SIZE","RANK","LOCAL_RANK","LOCAL_WORLD_SIZE","MASTER_ADDR","MASTER_PORT"]:
         env.pop(k, None)
 
