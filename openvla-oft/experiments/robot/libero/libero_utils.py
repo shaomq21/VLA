@@ -44,13 +44,14 @@ def get_libero_wrist_image(obs):
     return img
 
 
-def save_rollout_video(rollout_images, idx, success, task_description, log_file=None):
-    """Saves an MP4 replay of an episode."""
+def save_rollout_video(rollout_images, idx, success, task_description, log_file=None, suffix=None, fps=30):
+    """Saves an MP4 replay of an episode. Same fps for raw and masked so they stay in sync."""
     rollout_dir = f"./rollouts/{DATE}"
     os.makedirs(rollout_dir, exist_ok=True)
     processed_task_description = task_description.lower().replace(" ", "_").replace("\n", "_").replace(".", "_")[:50]
-    mp4_path = f"{rollout_dir}/{DATE_TIME}--openvla_oft--episode={idx}--success={success}--task={processed_task_description}.mp4"
-    video_writer = imageio.get_writer(mp4_path, fps=30)
+    extra = f"--{suffix}" if suffix else ""
+    mp4_path = f"{rollout_dir}/{DATE_TIME}--openvla_oft--episode={idx}--success={success}--task={processed_task_description}{extra}.mp4"
+    video_writer = imageio.get_writer(mp4_path, fps=fps)
     for img in rollout_images:
         video_writer.append_data(img)
     video_writer.close()

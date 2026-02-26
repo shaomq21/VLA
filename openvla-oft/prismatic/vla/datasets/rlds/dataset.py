@@ -463,6 +463,7 @@ def make_interleaved_dataset(
     balance_weights: bool = False,
     traj_transform_threads: Optional[int] = None,
     traj_read_threads: Optional[int] = None,
+    max_episodes: Optional[int] = None,
 ) -> dl.DLataset:
     """
     Creates an interleaved dataset from list of dataset configs (kwargs). Returns a dataset of batched frames.
@@ -486,7 +487,10 @@ def make_interleaved_dataset(
             datasets according to their sampling weights. If None, defaults to AUTOTUNE for every dataset.
         traj_read_threads: total number of parallel read workers for trajectory transforms, distributed across
             datasets according to their sampling weights. If None, defaults to AUTOTUNE for every dataset.
+        max_episodes: if set, only load this many trajectories (episodes) per dataset — for overfit/debug.
     """
+    if max_episodes is not None:
+        overwatch.info("OVERFIT MODE: limiting to max_episodes=%d per dataset", max_episodes)
     # Default to uniform sampling (if `sample_weights` is not specified)
     if not sample_weights:
         sample_weights = [1.0] * len(dataset_kwargs_list)
@@ -548,6 +552,8 @@ def make_interleaved_dataset(
             num_parallel_reads=reads,
             dataset_statistics=all_dataset_statistics[dataset_kwargs["name"]],
         )
+        if max_episodes is not None:
+            dataset = dataset.take(max_episodes)
         dataset = apply_trajectory_transforms(
             dataset.repeat(),
             **traj_transform_kwargs,

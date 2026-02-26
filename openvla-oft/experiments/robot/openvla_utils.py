@@ -254,41 +254,66 @@ def load_component_state_dict(checkpoint_path: str) -> Dict[str, torch.Tensor]:
 def get_vla(cfg: Any) -> torch.nn.Module:
     """
     Load and initialize the VLA model from checkpoint.
-
-    Args:
-        cfg: Configuration object
-
-    Returns:
-        torch.nn.Module: The initialized VLA model
+    When base_vla_path is set and pretrained_checkpoint is adapter-only (has lora_adapter/, no config.json),
+    loads base from base_vla_path then loads adapter and merge_and_unload.
     """
     print("Instantiating pretrained VLA policy...")
 
-    # If loading a locally stored pretrained checkpoint, check whether config or model files
-    # need to be synced so that any changes the user makes to the VLA modeling code will
-    # actually go into effect
-    # If loading a pretrained checkpoint from Hugging Face Hub, we just assume that the policy
-    # will be used as is, with its original modeling logic
-    if not model_is_on_hf_hub(cfg.pretrained_checkpoint):
-        # Register OpenVLA model to HF Auto Classes (not needed if the model is on HF Hub)
-        AutoConfig.register("openvla", OpenVLAConfig)
-        AutoImageProcessor.register(OpenVLAConfig, PrismaticImageProcessor)
-        AutoProcessor.register(OpenVLAConfig, PrismaticProcessor)
-        AutoModelForVision2Seq.register(OpenVLAConfig, OpenVLAForActionPrediction)
-
-        # Update config.json and sync model files
-        update_auto_map(cfg.pretrained_checkpoint)
-        check_model_logic_mismatch(cfg.pretrained_checkpoint)
-
-    # Load the model
-    vla = AutoModelForVision2Seq.from_pretrained(
-        cfg.pretrained_checkpoint,
-        # attn_implementation="flash_attention_2",
-        torch_dtype=torch.bfloat16,
-        load_in_8bit=cfg.load_in_8bit,
-        load_in_4bit=cfg.load_in_4bit,
-        low_cpu_mem_usage=True,
-        trust_remote_code=True,
+    base_path = getattr(cfg, "base_vla_path", None) if cfg else None
+    base_path = (base_path.strip() if isinstance(base_path, str) else base_path) or None
+    if base_path is not None:
+        base_path = str(base_path)
+    ckpt_path = str(cfg.pretrained_checkpoint)
+    adapter_dir = os.path.join(ckpt_path, "lora_adapter")
+    is_adapter_only = (
+        base_path
+        and not model_is_on_hf_hub(ckpt_path)
+        and os.path.isdir(ckpt_path)
+        and os.path.isdir(adapter_dir)
+        and not os.path.isfile(os.path.join(ckpt_path, "config.json"))
     )
+
+    if is_adapter_only:
+        # Load base from base_vla_path, then load adapter and merge
+        if not model_is_on_hf_hub(base_path):
+            AutoConfig.register("openvla", OpenVLAConfig)
+            AutoImageProcessor.register(OpenVLAConfig, PrismaticImageProcessor)
+            AutoProcessor.register(OpenVLAConfig, PrismaticProcessor)
+            AutoModelForVision2Seq.register(OpenVLAConfig, OpenVLAForActionPrediction)
+            update_auto_map(base_path)
+            check_model_logic_mismatch(base_path)
+
+        vla = AutoModelForVision2Seq.from_pretrained(
+            base_path,
+            torch_dtype=torch.bfloat16,
+            load_in_8bit=cfg.load_in_8bit,
+            load_in_4bit=cfg.load_in_4bit,
+            low_cpu_mem_usage=True,
+            trust_remote_code=True,
+        )
+        from peft import PeftModel
+
+        vla.vision_backbone = PeftModel.from_pretrained(vla.vision_backbone, adapter_dir)
+        vla.vision_backbone = vla.vision_backbone.merge_and_unload()
+        print("Loaded base from %s and merged adapter from %s" % (base_path, ckpt_path))
+    else:
+        # Full checkpoint or HF Hub
+        if not model_is_on_hf_hub(ckpt_path):
+            AutoConfig.register("openvla", OpenVLAConfig)
+            AutoImageProcessor.register(OpenVLAConfig, PrismaticImageProcessor)
+            AutoProcessor.register(OpenVLAConfig, PrismaticProcessor)
+            AutoModelForVision2Seq.register(OpenVLAConfig, OpenVLAForActionPrediction)
+            update_auto_map(ckpt_path)
+            check_model_logic_mismatch(ckpt_path)
+
+        vla = AutoModelForVision2Seq.from_pretrained(
+            ckpt_path,
+            torch_dtype=torch.bfloat16,
+            load_in_8bit=cfg.load_in_8bit,
+            load_in_4bit=cfg.load_in_4bit,
+            low_cpu_mem_usage=True,
+            trust_remote_code=True,
+        )
 
     # If using FiLM, wrap the vision backbone to allow for infusion of language inputs
     if cfg.use_film:
@@ -303,8 +328,8 @@ def get_vla(cfg: Any) -> torch.nn.Module:
     if not cfg.load_in_8bit and not cfg.load_in_4bit:
         vla = vla.to(DEVICE)
 
-    # Load dataset stats for action normalization
-    _load_dataset_stats(vla, cfg.pretrained_checkpoint)
+    # Load dataset stats for action normalization (from adapter/full ckpt dir)
+    _load_dataset_stats(vla, ckpt_path)
 
     return vla
 

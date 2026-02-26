@@ -4,7 +4,7 @@ run_libero_eval_mask.py
 Evaluates a trained policy in a LIBERO simulation benchmark task suite.
 """
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 import json
 import logging
 import os
@@ -13,11 +13,19 @@ from collections import deque
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import draccus
 import numpy as np
 import tqdm
+
+try:
+    import pandas as pd
+    import openpyxl  # noqa: F401
+
+    _HAS_EXCEL = True
+except ImportError:
+    _HAS_EXCEL = False
 from libero.libero import benchmark
 
 import wandb
@@ -88,11 +96,34 @@ class TaskSuite(str, Enum):
     LIBERO_90 = "libero_90"
 
 
+# Skip these tasks during evaluation (exact match after strip+lower).
+# Both raw (from env) and processed (after language_mask_processor) descriptions are checked.
+SKIP_TASK_DESCRIPTIONS = {
+    "open the green masked drawer of the square object",
+    "put the bowl on the stove",
+    "put the bowl on the plate",
+    "open the top drawer and put the bowl inside",
+    
+    "open the middle drawer of the cabinet",
+    "put the bowl on top of the stove",
+    "put the bowl on top of the cabinet",
+    
+    "turn on the stove",
+    "put the wine bottle on the rack",
+    "put the cream cheese in the bowl",
+    "put the wine bottle on top of the cabinet",
+
+
+
+}
+#"push the plate to the front of the stove",
+
+
 # Define max steps for each task suite
 TASK_MAX_STEPS = {
     TaskSuite.LIBERO_SPATIAL: 220,  # longest training demo has 193 steps
     TaskSuite.LIBERO_OBJECT: 280,  # longest training demo has 254 steps
-    TaskSuite.LIBERO_GOAL: 200,  # longest training demo has 270 steps
+    TaskSuite.LIBERO_GOAL: 150,  # longest training demo has 270 steps
     TaskSuite.LIBERO_10: 520,  # longest training demo has 505 steps
     TaskSuite.LIBERO_90: 400,  # longest training demo has 373 steps
 }
@@ -115,7 +146,8 @@ class GenerateConfig:
     # Model-specific parameters
     #################################################################################################################
     model_family: str = "openvla"                    # Model family
-    pretrained_checkpoint: Union[str, Path] = ""     # Pretrained checkpoint path
+    pretrained_checkpoint: Union[str, Path] = ""     # Adapter checkpoint dir or full model path
+    base_vla_path: Optional[str] = None             # When set: load base from here, then load adapter from pretrained_checkpoint and merge
 
     use_l1_regression: bool = True                   # If True, uses continuous action head with L1 regression objective
     use_diffusion: bool = False                      # If True, uses continuous action head with diffusion modeling objective (DDIM)
@@ -150,6 +182,8 @@ class GenerateConfig:
     run_id_note: Optional[str] = None                # Extra note to add to end of run ID for logging
     local_log_dir: str = "./experiments/logs"        # Local directory for eval logs
 
+    loadinfo: bool = False                           # If True: save mask images per step, action chunk and proprio to Excel
+
     use_wandb: bool = False                          # Whether to also log results in Weights & Biases
     wandb_entity: str = "maggiesh-carnegie-mellon-university"          # Name of WandB entity
     wandb_project: str = "validation"        # Name of WandB project
@@ -167,6 +201,11 @@ def validate_config(cfg: GenerateConfig) -> None:
         assert cfg.center_crop, "Expecting `center_crop==True` because model was trained with image augmentations!"
 
     assert not (cfg.load_in_8bit and cfg.load_in_4bit), "Cannot use both 8-bit and 4-bit quantization!"
+
+    if cfg.loadinfo and not _HAS_EXCEL:
+        raise ImportError(
+            "loadinfo=True requires pandas and openpyxl. Install with: pip install pandas openpyxl"
+        )
 
     # Validate task suite
     assert cfg.task_suite_name in [suite.value for suite in TaskSuite], f"Invalid task suite: {cfg.task_suite_name}"
@@ -302,6 +341,45 @@ def process_action(action, model_family):
         action = invert_gripper_action(action)
 
     return action
+
+
+def _draw_step_on_image(img: Union[np.ndarray, Image.Image], step: int) -> Image.Image:
+    """Draw step number on image for loadinfo mask output."""
+    if isinstance(img, np.ndarray):
+        img = Image.fromarray(img)
+    img = img.convert("RGB").copy()
+    draw = ImageDraw.Draw(img)
+    try:
+        font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 32)
+    except OSError:
+        font = ImageFont.load_default()
+    text = f"Step {step}"
+    # White text with black outline for visibility
+    x, y = 10, 10
+    for dx, dy in [(-1, -1), (-1, 1), (1, -1), (1, 1)]:
+        draw.text((x + dx, y + dy), text, fill="black", font=font)
+    draw.text((x, y), text, fill="white", font=font)
+    return img
+
+
+def _save_loadinfo_excel(
+    rows: List[Dict[str, Any]],
+    output_path: str,
+    log_file=None,
+) -> None:
+    """Save action chunk and proprio rows to Excel."""
+    if not rows:
+        log_message("loadinfo: No data to save to Excel", log_file)
+        return
+    if not _HAS_EXCEL:
+        log_message("loadinfo: pandas/openpyxl not installed, cannot save Excel. Install: pip install pandas openpyxl", log_file)
+        return
+    try:
+        df = pd.DataFrame(rows)
+        df.to_excel(output_path, index=False, engine="openpyxl")
+        log_message(f"loadinfo: Saved Excel to {output_path}", log_file)
+    except Exception as e:
+        log_message(f"loadinfo: Failed to save Excel: {e}", log_file)
 import time
 
 def ts(msg):
@@ -319,6 +397,8 @@ def run_episode(
     noisy_action_projector=None,
     initial_state=None,
     log_file=None,
+    loadinfo_output_dir: Optional[str] = None,
+    episode_idx: int = 0,
 ):
     """Run a single episode in the environment."""
     # Reset environment
@@ -340,7 +420,17 @@ def run_episode(
     # Setup
     t = 0
     replay_images = []
+    replay_masked_images = []  # same frame count as replay_images, for masked video
     max_steps = TASK_MAX_STEPS[cfg.task_suite_name]
+
+    # loadinfo: collect action chunk and proprio for Excel
+    loadinfo_rows: List[Dict[str, Any]] = []
+    loadinfo_ep_dir: Optional[str] = None
+    if cfg.loadinfo and loadinfo_output_dir is not None:
+        safe_name = raw_task_description.replace(" ", "_").replace("/", "_")
+        loadinfo_ep_dir = os.path.join(loadinfo_output_dir, safe_name, f"episode_{episode_idx}")
+        os.makedirs(loadinfo_ep_dir, exist_ok=True)
+        log_message(f"loadinfo: Saving to {loadinfo_ep_dir}", log_file)
 
     # Run episode
     success = False
@@ -387,6 +477,7 @@ def run_episode(
                     task_object,
                     out_path,
                 )
+                replay_masked_images.append(np.asarray(masked))
 
                 observation["full_image"] = resize_image_for_policy(masked, resize_size)
                 
@@ -409,6 +500,26 @@ def run_episode(
                 action_queue.extend(actions)
                 ts(f"t={t} after get_action | got {len(actions)} actions")
 
+                # loadinfo: save mask with step number, record action chunk and proprio
+                if cfg.loadinfo and loadinfo_ep_dir is not None:
+                    # Save mask image with step number clearly labeled
+                    masked_with_step = _draw_step_on_image(masked, t)
+                    mask_path = os.path.join(loadinfo_ep_dir, f"mask_step_{t:04d}.png")
+                    masked_with_step.save(mask_path)
+
+                    # Build row: step, action_chunk (flatten), proprio
+                    row: Dict[str, Any] = {"step": t}
+                    for i, a in enumerate(actions):
+                        arr = np.asarray(a)
+                        for j in range(arr.size):
+                            row[f"action_chunk_{i}_{j}"] = float(arr.flat[j])
+                    proprio = observation.get("state")
+                    if proprio is not None:
+                        proprio_arr = np.asarray(proprio)
+                        for j in range(proprio_arr.size):
+                            row[f"proprio_{j}"] = float(proprio_arr.flat[j])
+                    loadinfo_rows.append(row)
+
             # Get action from queue
             action = action_queue.popleft()
 
@@ -427,7 +538,12 @@ def run_episode(
     except Exception as e:
         log_message(f"Episode error: {e}", log_file)
 
-    return success, replay_images
+    # loadinfo: save Excel with action chunk and proprio
+    if cfg.loadinfo and loadinfo_ep_dir is not None and loadinfo_rows:
+        excel_path = os.path.join(loadinfo_ep_dir, "action_chunk_proprio.xlsx")
+        _save_loadinfo_excel(loadinfo_rows, excel_path, log_file)
+
+    return success, replay_images, replay_masked_images
 
 
 def run_task(
@@ -454,6 +570,17 @@ def run_task(
     # Initialize environment and get task description
     env, task_description = get_libero_env(task, cfg.model_family, resolution=cfg.env_img_res)
     raw_task_description = task_description
+    processed_description = language_mask_processor(task_description)
+
+    def _should_skip(desc: str) -> bool:
+        return (desc or "").strip().lower() in SKIP_TASK_DESCRIPTIONS
+
+    if _should_skip(task_description) or _should_skip(processed_description):
+        log_message(
+            f"Skipping task_id={task_id} (in skip list): raw={task_description!r} processed={processed_description!r}",
+            log_file,
+        )
+        return total_episodes, total_successes
 
     # Start episodes
     task_episodes, task_successes = 0, 0
@@ -479,11 +606,15 @@ def run_task(
             initial_state = np.array(all_initial_states[initial_states_task_key][episode_key]["initial_state"])
 
         log_message(f"Starting episode {task_episodes + 1}...", log_file)
-                    
 
+        # loadinfo output dir
+        loadinfo_output_dir: Optional[str] = None
+        if cfg.loadinfo:
+            loadinfo_output_dir = os.path.join(cfg.local_log_dir, "loadinfo_output")
+            os.makedirs(loadinfo_output_dir, exist_ok=True)
 
         # Run episode
-        success, replay_images = run_episode(
+        success, replay_images, replay_masked_images = run_episode(
             cfg,
             env,
             raw_task_description,
@@ -495,6 +626,8 @@ def run_task(
             noisy_action_projector,
             initial_state,
             log_file,
+            loadinfo_output_dir=loadinfo_output_dir,
+            episode_idx=episode_idx,
         )
 
         # Update counters
@@ -504,9 +637,17 @@ def run_task(
             task_successes += 1
             total_successes += 1
 
-        # Save replay video
+        # Save rollout videos (raw and masked, same fps and frame count)
         save_rollout_video(
             replay_images, total_episodes, success=success, task_description=task_description, log_file=log_file
+        )
+        save_rollout_video(
+            replay_masked_images,
+            total_episodes,
+            success=success,
+            task_description=task_description,
+            log_file=log_file,
+            suffix="masked",
         )
 
         # Log results

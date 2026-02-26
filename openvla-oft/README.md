@@ -72,3 +72,27 @@ git push
 
 
 python tools/rlds_mask.py --data_mix libero_goal_no_noops --debug_dir rlds_mask_debug --debug_every 200 --no_mask_wrist 
+
+./auto_run.sh --fast_model
+
+
+
+  export ROBOFLOW_API_KEY="
+
+CKPT_DIR="/home/ubuntu/runs/openvla_adapters/openvla-7b+libero_goal_no_noops+b8+lr-0.0001+lora-r8+dropout-0.0+lora-attn-only--13500_chkpt"
+
+PYTHONPATH=/home/ubuntu/16831pro_fine_tune/LIBERO:$PYTHONPATH \
+python experiments/robot/libero/run_libero_eval_mask.py \
+  --pretrained_checkpoint "${CKPT_DIR}" \
+  --base_vla_path "/home/ubuntu/runs/openvla/openvla-7b" \
+  --use_proprio True \
+  --task_suite_name libero_goal
+
+
+
+
+
+
+
+cd /home/ubuntu/16831pro_fine_tune/openvla-oft
+PYTHONPATH=. /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python test_roboflow_gripper.py

@@ -1,19 +1,21 @@
 """Implementation of additional projectors for additional inputs to the VLA models."""
 import torch
 import torch.nn as nn
+from typing import Optional
 
 
 class ProprioProjector(nn.Module):
     """
     Projects proprio state inputs into the LLM's embedding space.
     """
-    def __init__(self, llm_dim: int, proprio_dim: int) -> None:
+    def __init__(self, llm_dim: int, proprio_dim: int, hidden_dim: Optional[int] = None) -> None:
         super().__init__()
         self.llm_dim = llm_dim
         self.proprio_dim = proprio_dim
+        hidden_dim = hidden_dim if hidden_dim is not None else llm_dim
 
-        self.fc1 = nn.Linear(self.proprio_dim, self.llm_dim, bias=True)
-        self.fc2 = nn.Linear(self.llm_dim, self.llm_dim, bias=True)
+        self.fc1 = nn.Linear(self.proprio_dim, hidden_dim, bias=True)
+        self.fc2 = nn.Linear(hidden_dim, self.llm_dim, bias=True)
         self.act_fn1 = nn.GELU()
 
     def forward(self, proprio: torch.Tensor = None) -> torch.Tensor:

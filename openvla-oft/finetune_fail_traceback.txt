@@ -1,24 +1,22 @@
 Traceback (most recent call last):
-  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/vla-scripts/finetune.py", line 1188, in <module>
+  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/vla-scripts/finetune.py", line 1338, in <module>
     finetune()
   File "/home/ubuntu/miniconda3/envs/simplevla/lib/python3.10/site-packages/draccus/argparsing.py", line 203, in wrapper_inner
     response = fn(cfg, *args, **kwargs)
-  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/vla-scripts/finetune.py", line 1080, in finetune
+  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/vla-scripts/finetune.py", line 1230, in finetune
     loss, metrics = run_forward_pass(
-  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/vla-scripts/finetune.py", line 350, in run_forward_pass
+  File "/home/ubuntu/16831pro_fine_tune/openvla-oft/vla-scripts/finetune.py", line 369, in run_forward_pass
     output: CausalLMOutputWithPast = vla(
   File "/home/ubuntu/miniconda3/envs/simplevla/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1511, in _wrapped_call_impl
     return self._call_impl(*args, **kwargs)
   File "/home/ubuntu/miniconda3/envs/simplevla/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1520, in _call_impl
     return forward_call(*args, **kwargs)
-  File "/home/ubuntu/miniconda3/envs/simplevla/lib/python3.10/site-packages/torch/nn/parallel/distributed.py", line 1525, in forward
-    return self._post_forward(output)
-  File "/home/ubuntu/miniconda3/envs/simplevla/lib/python3.10/site-packages/torch/nn/parallel/distributed.py", line 1500, in _post_forward
-    passthrough_tensor_list = _DDPSink.apply(
-  File "/home/ubuntu/miniconda3/envs/simplevla/lib/python3.10/site-packages/torch/autograd/function.py", line 553, in apply
-    return super().apply(*args, **kwargs)  # type: ignore[misc]
-  File "/home/ubuntu/miniconda3/envs/simplevla/lib/python3.10/site-packages/torch/nn/parallel/distributed.py", line 245, in forward
-    ret = tuple(
-  File "/home/ubuntu/miniconda3/envs/simplevla/lib/python3.10/site-packages/torch/nn/parallel/distributed.py", line 246, in <genexpr>
-    inp.clone() if isinstance(inp, torch.Tensor) else inp for inp in inputs
-torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 22.06 GiB of which 9.44 MiB is free. Including non-PyTorch memory, this process has 22.04 GiB memory in use. Of the allocated memory 21.23 GiB is allocated by PyTorch, and 166.57 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+  File "/home/ubuntu/miniconda3/envs/simplevla/lib/python3.10/site-packages/torch/nn/parallel/distributed.py", line 1519, in forward
+    inputs, kwargs = self._pre_forward(*inputs, **kwargs)
+  File "/home/ubuntu/miniconda3/envs/simplevla/lib/python3.10/site-packages/torch/nn/parallel/distributed.py", line 1413, in _pre_forward
+    if torch.is_grad_enabled() and self.reducer._rebuild_buckets():
+RuntimeError: Expected to have finished reduction in the prior iteration before starting a new one. This error indicates that your module has parameters that were not used in producing loss. You can enable unused parameter detection by passing the keyword argument `find_unused_parameters=True` to `torch.nn.parallel.DistributedDataParallel`, and by 
+making sure all `forward` function outputs participate in calculating loss. 
+If you already have done the above, then the distributed data parallel module wasn't able to locate the output tensors in the return value of your module's `forward` function. Please include the loss function and the structure of the return value of `forward` of your module when reporting this issue (e.g. list, dict, iterable).
+Parameter indices which did not receive grad for rank 0: 92 93 94 95 200 201 202 203
+ In addition, you can set the environment variable TORCH_DISTRIBUTED_DEBUG to either INFO or DETAIL to print out information about which particular parameters did not receive gradient on this rank as part of this error

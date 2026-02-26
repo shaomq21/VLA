@@ -293,7 +293,7 @@ class GroundedSAMMasker:
         self.sam_predictor = SamPredictor(sam)
 
     @torch.inference_mode()
-    def _segment_phrases(self, image_rgb: np.ndarray, phrases: List[str]) -> np.ndarray:
+    def _segment_phrases(self, image_rgb: np.ndarray, phrases: List[str], lang: str = "") -> np.ndarray:
         """
         Returns a union mask (H,W) bool for all phrases.
         """
@@ -302,9 +302,8 @@ class GroundedSAMMasker:
 
         H, W = image_rgb.shape[:2]
         union = np.zeros((H, W), dtype=bool)
-
-        
-        
+        # 任务里没有 cabinet/rack 时，不 box 右边的物体（避免误框柜子）
+        skip_right = ("cabinet" not in lang.lower()) and ("rack" not in lang.lower())
 
         for phrase in phrases:
             phrase = phrase.strip()
@@ -327,6 +326,19 @@ class GroundedSAMMasker:
 
             boxes_xyxy = detections.xyxy
             if boxes_xyxy is None or len(boxes_xyxy) == 0:
+                continue
+
+            # plate 检测出两个（盘+碗）时，取下面的 mask（盘子）
+            if "plate" in phrase.lower() and len(boxes_xyxy) > 1:
+                bottommost_idx = np.argmax(boxes_xyxy[:, 3])  # y2 最大 = 最下面
+                boxes_xyxy = np.array([boxes_xyxy[bottommost_idx]], dtype=boxes_xyxy.dtype)
+
+            # 任务无 cabinet/rack 时，排除靠右的 box（多是柜子误检）
+            if skip_right and len(boxes_xyxy) > 0:
+                cx = (boxes_xyxy[:, 0] + boxes_xyxy[:, 2]) / 2
+                keep_mask = cx <= 0.6 * W
+                boxes_xyxy = boxes_xyxy[keep_mask]
+            if len(boxes_xyxy) == 0:
                 continue
 
             # SAM expects boxes as torch tensor on device in XYXY
@@ -416,13 +428,13 @@ class GroundedSAMMasker:
         if spec.red_points_xy:                      
             red_mask = self._segment_points(image_rgb, spec.red_points_xy)
         else:
-            red_mask = self._segment_phrases(image_rgb, spec.red_phrases)
+            red_mask = self._segment_phrases(image_rgb, spec.red_phrases, lang=lang)
 
         # === GREEN ===
-        if spec.green_points_xy:                   
+        if spec.green_points_xy:                      
             green_mask = self._segment_points(image_rgb, spec.green_points_xy)
         else:
-            green_mask = self._segment_phrases(image_rgb, spec.green_phrases)
+            green_mask = self._segment_phrases(image_rgb, spec.green_phrases, lang=lang)
 
         if spec.red_points_xy or spec.green_points_xy:
             debug_rgb = Image.fromarray(image_rgb.copy(), mode="RGB")
@@ -455,7 +467,6 @@ class GroundedSAMMasker:
                 gripper_centers = _detect_gripper_centers(image_rgb, self.cfg.gripper_model_id)
                 if gripper_centers:
                     H, W = image_rgb.shape[:2]
-                    # 按图像尺寸缩放半径，256x256 时约 5px，避免 LIBERO 小图上点过大
                     radius = max(2, min(5, min(H, W) // 70))
                     out = _draw_white_dots(out, gripper_centers, radius=radius)
             except Exception as e:

@@ -28,6 +28,14 @@ import numpy as np
 from PIL import Image
 
 
+# 只训练这几个场景时使用（task description 无下划线，与 RLDS language_instruction 一致）
+ALLOWED_TASK_DESCRIPTIONS = [
+    "open the middle drawer of the cabinet",
+    "put the bowl on top of the stove",
+    "push the plate to the front of the stove",
+    "put the bowl on the plate",
+]
+
 
 def language_mask_processor(lang: str) -> str:
     """
@@ -114,16 +122,16 @@ MASK_ONE_SCRIPT = cur / "tools" / "mask_one.py"
 
 DINO_CONFIG = "GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py"
 DINO_CKPT   = "groundingdino_swint_ogc.pth"
-SAM_CKPT    = "sam_vit_h_4b8939.pth"
-SAM_TYPE    = "vit_h"
+SAM_CKPT    = "sam_vit_b_01ec64.pth"
+SAM_TYPE    = "vit_b"
 DEVICE      = "cuda"
 
 
 def mask_image_via_other_env(img_pil: Image.Image, lang: str, out_path: str) -> Image.Image:
     print("---activate env vla-preprocess---")
 
-    #env = os.environ.copy()
-    #env["CUDA_VISIBLE_DEVICES"] = "2"   
+    env = os.environ.copy()
+    # env["CUDA_VISIBLE_DEVICES"] = "2"  # optional: pin subprocess GPU
     for k in ["WORLD_SIZE","RANK","LOCAL_RANK","LOCAL_WORLD_SIZE","MASTER_ADDR","MASTER_PORT"]:
         env.pop(k, None)
 
@@ -270,9 +278,22 @@ class RLDSDataset(IterableDataset):
         shuffle_buffer_size: int = 256_000,
         train: bool = True,
         image_aug: bool = False,
+        max_episodes: Optional[int] = None,
+        allowed_tasks: Optional[List[str]] = None,
     ) -> None:
-        """Lightweight wrapper around RLDS TFDS Pipeline for use with PyTorch/OpenVLA Data Loaders."""
+        """Lightweight wrapper around RLDS TFDS Pipeline for use with PyTorch/OpenVLA Data Loaders.
+
+        max_episodes: if set, only load this many episodes (trajectories) per dataset — for overfit/debug.
+        allowed_tasks: if set, only yield batches whose task language_instruction (strip+lower) is in this list.
+                      When None and data_mix contains "libero", defaults to ALLOWED_TASK_DESCRIPTIONS (5 scenes).
+        """
         self.data_root_dir, self.data_mix, self.batch_transform = data_root_dir, data_mix, batch_transform
+        if allowed_tasks is not None:
+            self.allowed_tasks = set(t.strip().lower() for t in allowed_tasks) if allowed_tasks else None
+        elif "libero" in data_mix:
+            self.allowed_tasks = set(t.strip().lower() for t in ALLOWED_TASK_DESCRIPTIONS)
+        else:
+            self.allowed_tasks = None
 
         # Configure RLDS Dataset(s)
         if self.data_mix in OXE_NAMED_MIXTURES:
@@ -335,6 +356,10 @@ class RLDSDataset(IterableDataset):
         # fmt: on
 
         # Initialize RLDS Dataset
+        if max_episodes is not None:
+            print(f"[RLDSDataset] OVERFIT: max_episodes={max_episodes} (only first {max_episodes} episode(s) per dataset)", flush=True)
+        if self.allowed_tasks is not None:
+            print(f"[RLDSDataset] Filtering to {len(self.allowed_tasks)} tasks: {sorted(self.allowed_tasks)}", flush=True)
         self.dataset, self.dataset_length, self.dataset_statistics = self.make_dataset(rlds_config)
 
     def make_dataset(self, rlds_config):
@@ -342,6 +367,11 @@ class RLDSDataset(IterableDataset):
 
     def __iter__(self) -> Dict[str, Any]:
         for rlds_batch in self.dataset.as_numpy_iterator():
+            if self.allowed_tasks is not None:
+                lang = rlds_batch["task"]["language_instruction"]
+                lang = (lang.decode().strip().lower() if isinstance(lang, bytes) else str(lang).strip().lower())
+                if lang not in self.allowed_tasks:
+                    continue
             yield self.batch_transform(rlds_batch)
 
     def __len__(self) -> int:

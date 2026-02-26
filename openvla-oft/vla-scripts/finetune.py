@@ -9,6 +9,7 @@ Fine-tunes OpenVLA via LoRA.
 """
 
 import os
+import re
 import time
 from collections import deque
 from dataclasses import dataclass
@@ -85,6 +86,7 @@ class FinetuneConfig:
     dataset_name: str = "aloha_scoop_x_into_bowl"    # Name of fine-tuning dataset (e.g., `aloha_scoop_x_into_bowl`)
     run_root_dir: Path = Path("/home/ubuntu/runs/openvla")    # Path to directory to store logs & checkpoints
     shuffle_buffer_size: int = 100_000               # Dataloader shuffle buffer size (can reduce if OOM errors occur)
+    max_episodes: Optional[int] = None               # If set, only load this many episodes (overfit/debug)
 
     # Algorithm and architecture
     use_l1_regression: bool = True                   # If True, trains continuous action head with L1 regression objective
@@ -115,17 +117,20 @@ class FinetuneConfig:
     # LoRA
     use_lora: bool = True                            # If True, uses LoRA fine-tuning
     lora_rank: int = 32                              # Rank of LoRA weight matrix
+    lora_target_modules: Optional[str] = None        # None or "all-linear" = all linear layers; "attn-only" = attn only (timm ViT: qkv, proj)
     lora_dropout: float = 0.0                        # Dropout applied to LoRA weights
     merge_lora_during_training: bool = True          # If True, merges LoRA weights and saves result during training
                                                      #   Note: Merging can be very slow on some machines. If so, set to
                                                      #         False and merge final checkpoint offline!
+    lightweight_mode: bool = False                   # If True, only train vision_backbone LoRA + smaller action_head/proprio (overfit/debug)
+    proprio_projector_lr: Optional[float] = None     # If set, use this LR for proprio_projector (e.g. 1e-5~3e-5); else use learning_rate
 
     # Logging
     wandb_entity: str = "maggiesh-carnegie-mellon-university"          # Name of WandB entity
-    wandb_project: str = "vla_gripper"        # Name of WandB project
+    wandb_project: str = "vla_gripper_fast"        # Name of WandB project
     run_id_note: Optional[str] = None                # Extra note to add to end of run ID for logging
     run_id_override: Optional[str] = None            # Optional string to override the run ID with
-    wandb_log_freq: int = 50                         # WandB logging frequency in steps
+    wandb_log_freq: int = 10                         # WandB logging frequency in steps
 
     # fmt: on
 
@@ -182,8 +187,12 @@ def get_run_id(cfg) -> str:
         )
         if cfg.use_lora:
             run_id += f"+lora-r{cfg.lora_rank}+dropout-{cfg.lora_dropout}"
+            if cfg.lora_target_modules and cfg.lora_target_modules != "all-linear":
+                run_id += f"+lora-{cfg.lora_target_modules}"
         if cfg.image_aug:
             run_id += "--image_aug"
+        if cfg.lightweight_mode:
+            run_id += "--lightweight"
         if cfg.run_id_note is not None:
             run_id += f"--{cfg.run_id_note}"
     return run_id
@@ -247,6 +256,10 @@ def count_parameters(module: nn.Module, name: str) -> None:
     print(f"# trainable params in {name}: {num_params}")
 
 
+def count_trainable(module):
+    return sum(p.numel() for p in module.parameters() if p.requires_grad)
+
+
 def init_module(
     module_class: Type[nn.Module],
     module_name: str,
@@ -277,7 +290,13 @@ def init_module(
     if cfg.resume:
         state_dict = load_checkpoint_if_exists(module_name, cfg.vla_path, cfg.resume_step)
         if state_dict is not None:
-            module.load_state_dict(state_dict)
+            try:
+                module.load_state_dict(state_dict, strict=True)
+            except RuntimeError as e:
+                if "size mismatch" in str(e):
+                    print(f"Resume: {module_name} shape mismatch, using init weights instead.")
+                else:
+                    raise
         else:
             print(f"Resume: {module_name} not in ckpt, using init weights.")
 
@@ -645,9 +664,9 @@ def save_training_checkpoint(
 
     # Save model components (main process only)
     if distributed_state.is_main_process:
-        # Save processor and LoRA adapter
+        # Save processor and LoRA adapter (adapter 只含 vision_backbone；resume 时从 base + 此处 adapter 加载后 merge 再挂新 LoRA)
         processor.save_pretrained(checkpoint_dir)
-        vla.module.save_pretrained(adapter_dir)
+        vla.module.vision_backbone.save_pretrained(adapter_dir)
 
         # Save other components
         if cfg.use_proprio and proprio_projector is not None:
@@ -670,18 +689,17 @@ def save_training_checkpoint(
     # Wait for model components to be saved
     dist.barrier()
 
-    # Merge LoRA weights into base model and save resulting model checkpoint
-    # Note: Can be very slow on some devices; if so, we recommend merging offline
+    # Merge LoRA weights into base model and save resulting model checkpoint (adapter 仅 vision_backbone)
     if cfg.use_lora and cfg.merge_lora_during_training:
         merge_base_path = (cfg.base_vla_path if cfg.base_vla_path and str(cfg.base_vla_path).strip() else cfg.vla_path)
         base_vla = AutoModelForVision2Seq.from_pretrained(
             merge_base_path, torch_dtype=torch.bfloat16, low_cpu_mem_usage=True, trust_remote_code=True
         )
-        merged_vla = PeftModel.from_pretrained(base_vla, adapter_dir)
-        merged_vla = merged_vla.merge_and_unload()
+        base_vla.vision_backbone = PeftModel.from_pretrained(base_vla.vision_backbone, adapter_dir)
+        base_vla.vision_backbone = base_vla.vision_backbone.merge_and_unload()
 
         if distributed_state.is_main_process:
-            merged_vla.save_pretrained(checkpoint_dir)
+            base_vla.save_pretrained(checkpoint_dir)
             print(f"Saved merged model for Step {log_step} at: {checkpoint_dir}")
 
         # Wait for merged model to be saved
@@ -874,71 +892,144 @@ def finetune(cfg: FinetuneConfig) -> None:
     vla.vision_backbone.set_num_images_in_input(cfg.num_images_in_input)
 
     # LoRA: resume 时先加载 adapter、merge 到 base，再挂新 LoRA 继续训
+    # target_modules: "all-linear" or "attn-only". For attn-only we match only modules under .attn. (timm ViT: blocks.*.attn.qkv/proj); use regex so patch_embed.proj is not matched.
+    lora_target = cfg.lora_target_modules or "all-linear"
+    if lora_target == "attn-only":
+        # Discover attention Linear name suffixes under path ".attn." and build regex so only those are matched (excludes e.g. patch_embed.proj)
+        attn_linear_suffixes = set()
+        for name, mod in vla.vision_backbone.named_modules():
+            if isinstance(mod, torch.nn.Linear) and ".attn." in name:
+                attn_linear_suffixes.add(name.split(".")[-1])
+        if not attn_linear_suffixes:
+            sample = [n.split(".")[-1] for n, m in vla.vision_backbone.named_modules() if isinstance(m, torch.nn.Linear)][:20]
+            raise ValueError(
+                "attn-only: no Linear layers under path containing '.attn.' in vision_backbone. "
+                "Sample linear name suffixes in backbone: %s" % sample
+            )
+        # PEFT with target_modules=str uses re.fullmatch(pattern, key). Only match paths ending with .attn.<suffix>
+        lora_target_list = r"^.*\.attn\.(" + "|".join(re.escape(s) for s in sorted(attn_linear_suffixes)) + r")$"
+    else:
+        lora_target_list = "all-linear"
+    print("=" * 80)
+    mods_display = lora_target_list if lora_target_list == "all-linear" else (lora_target_list if isinstance(lora_target_list, list) else "regex .attn.(qkv|proj|...)")
+    print("[TRAIN CONFIG] LoRA rank=%s, target=%s (modules: %s)" % (cfg.lora_rank, lora_target, mods_display))
+    print("  use_proprio=%s, use_l1_regression=%s (action head), proprio_projector_lr=%s" % (
+        cfg.use_proprio, cfg.use_l1_regression, cfg.proprio_projector_lr))
+    print("=" * 80)
     lora_config = LoraConfig(
         r=cfg.lora_rank,
         lora_alpha=min(cfg.lora_rank, 16),
         lora_dropout=cfg.lora_dropout,
-        target_modules="all-linear",
+        target_modules=lora_target_list,
         init_lora_weights="gaussian",
     )
+    # LoRA 只挂在 vision_backbone 上，不对 language_model 注入 LoRA（最稳做法）
     if cfg.use_lora:
         adapter_dir = os.path.join(cfg.vla_path, "lora_adapter")
-        if cfg.resume and os.path.exists(os.path.join(adapter_dir, "adapter_config.json")):
-            # 开始时 merge 最新 adapter 和 base，再在合并后的模型上挂新 LoRA
-            vla = PeftModel.from_pretrained(vla, adapter_dir)
-            vla = vla.merge_and_unload()
-            vla = get_peft_model(vla, lora_config)
-            vla.print_trainable_parameters()
+        adapter_exists = os.path.exists(os.path.join(adapter_dir, "adapter_config.json"))
+        if cfg.resume and adapter_exists:
+            # 本次加载的是 base（base_load_path != vla_path）时才加载 adapter 并 merge；若加载的是 merged 全量 ckpt 则不再 load adapter
+            if base_load_path != cfg.vla_path:
+                vla.vision_backbone = PeftModel.from_pretrained(vla.vision_backbone, adapter_dir)
+                vla.vision_backbone = vla.vision_backbone.merge_and_unload()
+            vla.vision_backbone = get_peft_model(vla.vision_backbone, lora_config)
+            vla.vision_backbone.print_trainable_parameters()
         else:
-            vla = get_peft_model(vla, lora_config)
-            vla.print_trainable_parameters()
+            vla.vision_backbone = get_peft_model(vla.vision_backbone, lora_config)
+            vla.vision_backbone.print_trainable_parameters()
+        print("[LoRA] Applied ONLY to vision_backbone (language_model has no LoRA)")
+        # 始终冻结 language_model 等非 vision 参数，只训 vision LoRA（不依赖 lightweight_mode）
+        n_frozen, n_train = 0, 0
+        for n, p in vla.named_parameters():
+            if not p.requires_grad:
+                continue
+            if "vision_backbone" not in n:
+                p.requires_grad = False
+                n_frozen += 1
+            else:
+                n_train += 1
+        print(f"[LoRA] Frozen {n_frozen} non-vision params, trainable {n_train} vision_backbone params")
+        vla.vision_backbone.print_trainable_parameters()
+    # lightweight_mode 仅影响 hidden_dim 等，冻结非 vision 已在上方 use_lora 时统一做
+    # ---- 验证：训练了哪些模块 + 打印参数值确认已挂上 ----
+    trainable = [(n, p.shape) for n, p in vla.named_parameters() if p.requires_grad]
+    lora_trainable = [n for n, _ in trainable if ("lora_A" in n or "lora_B" in n)]
+    print("=" * 80)
+    print("[TRAINED MODULES] VLA (LoRA): %d trainable tensors, %d LoRA layers (lora_A/lora_B)" % (
+        len(trainable), len(lora_trainable)))
+    print("  LoRA target: %s" % ("attn-only (discovered from backbone)" if lora_target == "attn-only" else "all-linear"))
+    for n, s in trainable[:8]:
+        print("    %s %s" % (n, s))
+    if len(trainable) > 8:
+        print("    ... and %d more" % (len(trainable) - 8))
+    trainable_np = [(n, p) for n, p in vla.named_parameters() if p.requires_grad]
+    print("  Total trainable scalars (VLA): %s" % sum(p.numel() for _, p in trainable_np))
+    print("  Top5 by numel: %s" % sorted([(n, p.numel()) for n, p in trainable_np], key=lambda x: -x[1])[:5])
+    # 打印若干 LoRA 参数的值，确认已挂上且非零
+    lora_sample_count = 0
+    for n, p in vla.named_parameters():
+        if "lora" in n and p.requires_grad:
+            with torch.no_grad():
+                x = p.detach().float()
+                print("  [LoRA param] %s shape=%s mean=%.6f std=%.6f min=%.6f max=%.6f (confirm attached)" % (
+                    n, tuple(p.shape), x.mean().item(), x.std().item(), x.min().item(), x.max().item()))
+            lora_sample_count += 1
+            if lora_sample_count >= 4:
+                break
+    print("=" * 80)
 
-    # FiLM setup
+    # FiLM setup (LoRA 仅挂在 vision_backbone 时 vla 无 .model，用 vla.vision_backbone)
     if cfg.use_film:
         count_parameters(vla.vision_backbone, "vla.vision_backbone (original)")
-        # Wrap vision backbone with FiLM wrapper
-        # Important: For this, must specify `vla.model.vision_backbone` instead of just `vla.vision_backbone`, since the
-        # latter would cause the new wrapped backbone to be saved as a new attribute of `vla` instead of overwriting the
-        # original one (due to the LoRA wrapper)
-        vla.model.vision_backbone = FiLMedPrismaticVisionBackbone(
-            vision_backbone=vla.model.vision_backbone,
+        vla.vision_backbone = FiLMedPrismaticVisionBackbone(
+            vision_backbone=vla.vision_backbone,
             llm_dim=vla.llm_dim,
         )
         count_parameters(vla.vision_backbone, "vla.vision_backbone (post-wrap)")
         if cfg.resume:
             state_dict = load_checkpoint_if_exists("vision_backbone", cfg.vla_path, cfg.resume_step)
             if state_dict is not None:
-                vla.model.vision_backbone.load_state_dict(state_dict)
+                vla.vision_backbone.load_state_dict(state_dict)
             else:
                 print("Resume: vision_backbone not in ckpt, using init weights.")
-        vla.model.vision_backbone = vla.model.vision_backbone.to(device_id)
+        vla.vision_backbone = vla.vision_backbone.to(device_id)
 
-    # Wrap VLA with DDP
+    # Compile VLA for faster training (PyTorch 2.0+)
+    # 若出现 "invalid dtype for bias - should match query's dtype"，可先注释掉 compile
+    # vla = torch.compile(vla, mode="reduce-overhead")
+
+    # Free fragmented GPU memory before DDP (reduces OOM at wrap_ddp)
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+    # find_unused_parameters=True: VLA forward 里部分参数不参与 loss（如只对 action token 算 loss），DDP 需检测未使用参数
     vla = wrap_ddp(vla, device_id, find_unused=True)
 
     # If applicable, instantiate proprio projector
     if cfg.use_proprio:
+        proprio_hidden = 256 if cfg.lightweight_mode else vla.module.llm_dim
         proprio_projector = init_module(
             ProprioProjector,
             "proprio_projector",
             cfg,
             device_id,
-            {"llm_dim": vla.module.llm_dim, "proprio_dim": PROPRIO_DIM},
+            {"llm_dim": vla.module.llm_dim, "proprio_dim": PROPRIO_DIM, "hidden_dim": proprio_hidden},
         )
 
     # If applicable, instantiate continuous action head for L1 regression
     if cfg.use_l1_regression:
+        action_hidden = 256 if cfg.lightweight_mode else vla.module.llm_dim
         action_head = init_module(
             L1RegressionActionHead,
             "action_head",
             cfg,
             device_id,
-            {"input_dim": vla.module.llm_dim, "hidden_dim": vla.module.llm_dim, "action_dim": ACTION_DIM},
+            {"input_dim": vla.module.llm_dim, "hidden_dim": action_hidden, "action_dim": ACTION_DIM},
             to_bf16=True,
         )
 
     # If applicable, instantiate diffusion action head and noisy action projector
     if cfg.use_diffusion:
+        action_hidden = 256 if cfg.lightweight_mode else vla.module.llm_dim
         action_head = init_module(
             DiffusionActionHead,
             "action_head",
@@ -946,7 +1037,7 @@ def finetune(cfg: FinetuneConfig) -> None:
             device_id,
             {
                 "input_dim": vla.module.llm_dim,
-                "hidden_dim": vla.module.llm_dim,
+                "hidden_dim": action_hidden,
                 "action_dim": ACTION_DIM,
                 "num_diffusion_steps_train": cfg.num_diffusion_steps_train,
             },
@@ -965,16 +1056,70 @@ def finetune(cfg: FinetuneConfig) -> None:
     if cfg.use_diffusion:
         NUM_PATCHES += 1
 
-    # Instantiate optimizer
+    # Freeze the large fc1 layer(s) in action_head so only the last layers are trained (~117M excluded)
+    if cfg.use_l1_regression or cfg.use_diffusion:
+        fc1_frozen = 0
+        for n, p in action_head.named_parameters():
+            if "fc1" in n:
+                p.requires_grad = False
+                fc1_frozen += p.numel()
+        if fc1_frozen:
+            print("[ACTION_HEAD] Frozen fc1 params: %s (train only last layers)" % fc1_frozen)
+
+    # ---- 验证：action_head / proprio_projector 已挂上并打印参数值 ----
+    if cfg.use_l1_regression or cfg.use_diffusion:
+        ah_params = [(n, p) for n, p in action_head.named_parameters() if p.requires_grad]
+        print("=" * 80)
+        print("[TRAINED MODULES] action_head: %d trainable params, total scalars=%s" % (
+            len(ah_params), sum(p.numel() for _, p in ah_params)))
+        for n, p in ah_params[:6]:
+            print("    %s %s" % (n, tuple(p.shape)))
+        if ah_params:
+            with torch.no_grad():
+                sample = next(p for _, p in ah_params).detach().float()
+                print("  [action_head sample param] shape=%s mean=%.6f std=%.6f (confirm attached)" % (
+                    tuple(sample.shape), sample.mean().item(), sample.std().item()))
+        print("=" * 80)
+    if cfg.use_proprio:
+        pp_params = [(n, p) for n, p in proprio_projector.named_parameters() if p.requires_grad]
+        print("[TRAINED MODULES] proprio_projector: %d trainable params, total scalars=%s" % (
+            len(pp_params), sum(p.numel() for _, p in pp_params)))
+        for n, p in pp_params[:6]:
+            print("    %s %s" % (n, tuple(p.shape)))
+        if pp_params:
+            with torch.no_grad():
+                sample = next(p for _, p in pp_params).detach().float()
+                print("  [proprio_projector sample param] shape=%s mean=%.6f std=%.6f (confirm attached)" % (
+                    tuple(sample.shape), sample.mean().item(), sample.std().item()))
+
+    # Instantiate optimizer (optionally separate LR for proprio_projector)
     trainable_params = [param for param in vla.parameters() if param.requires_grad]
     if cfg.use_l1_regression or cfg.use_diffusion:
         trainable_params += [param for param in action_head.parameters() if param.requires_grad]
     if cfg.use_diffusion:
         trainable_params += [param for param in noisy_action_projector.parameters() if param.requires_grad]
+    proprio_params = [param for param in proprio_projector.parameters() if param.requires_grad] if cfg.use_proprio else []
+    if cfg.use_proprio and not proprio_params:
+        proprio_params = []
     if cfg.use_proprio:
-        trainable_params += [param for param in proprio_projector.parameters() if param.requires_grad]
+        trainable_params += proprio_params
     print(f"# total trainable params: {sum(p.numel() for p in trainable_params)}")
-    optimizer = AdamW(trainable_params, lr=cfg.learning_rate)
+    if cfg.proprio_projector_lr is not None and cfg.use_proprio and proprio_params:
+        # Separate param groups: main LR for VLA+action_head, lower LR for proprio_projector
+        proprio_set = set(proprio_params)
+        main_params = [p for p in trainable_params if p not in proprio_set]
+        optimizer = AdamW(
+            [{"params": main_params, "lr": cfg.learning_rate},
+             {"params": proprio_params, "lr": cfg.proprio_projector_lr}],
+        )
+        print("[OPTIMIZER] 2 param groups: main lr=%s (%s params), proprio_projector lr=%s (%s params)" % (
+            cfg.learning_rate, len(main_params), cfg.proprio_projector_lr, len(proprio_params)))
+    else:
+        optimizer = AdamW(trainable_params, lr=cfg.learning_rate)
+        print("[OPTIMIZER] 1 param group: lr=%s (%s params)" % (cfg.learning_rate, len(trainable_params)))
+    for i, g in enumerate(optimizer.param_groups):
+        n = sum(p.numel() for p in g["params"])
+        print("  group %d: lr=%s, num_params=%s" % (i, g["lr"], n))
 
     # Record original learning rate
     original_lr = optimizer.param_groups[0]["lr"]
@@ -1024,7 +1169,13 @@ def finetune(cfg: FinetuneConfig) -> None:
         resize_resolution=tuple(vla.module.config.image_sizes),
         shuffle_buffer_size=cfg.shuffle_buffer_size,
         image_aug=cfg.image_aug,
+        max_episodes=cfg.max_episodes,
     )
+    if getattr(train_dataset, "allowed_tasks", None) is not None:
+        print("[TRAIN TASKS] Using %d task(s): %s" % (
+            len(train_dataset.allowed_tasks), sorted(train_dataset.allowed_tasks)), flush=True)
+    else:
+        print("[TRAIN TASKS] No task filter (all tasks in dataset)", flush=True)
     if cfg.use_val_set:
         val_dataset = RLDSDataset(
             cfg.data_root_dir,
@@ -1034,6 +1185,7 @@ def finetune(cfg: FinetuneConfig) -> None:
             shuffle_buffer_size=cfg.shuffle_buffer_size // 10,
             image_aug=cfg.image_aug,
             train=False,
+            max_episodes=cfg.max_episodes,
         )
 
     # [Important] Save dataset statistics so that we can unnormalize actions during inference
