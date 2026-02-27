@@ -124,3 +124,11 @@ PYTHONPATH=/home/ubuntu/16831pro_fine_tune/LIBERO:$PYTHONPATH python experiments
    python experiments/robot/libero/run_single_chunk_inference.py \
    --proprio "0.144657,-0.275468,0.876451,-0.160527,0.49422,0.430039,0.738271,1" \
    --load_in_8bit True
+
+
+
+
+cd /home/ubuntu/16831pro_fine_tune/SimpleVLA-RL
+sudo fallocate -l 16G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile
+export RAY_memory_monitor_refresh_ms=0
+bash examples/run_openvla_oft_rl_libero_push_perturb.sh
