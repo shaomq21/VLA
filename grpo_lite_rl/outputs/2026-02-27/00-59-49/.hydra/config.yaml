@@ -1,0 +1,248 @@
+data:
+  tokenizer: null
+  task_suite_name: libero_goal
+  num_trials_per_task: 1
+  filter_warmup: false
+  prompt_key: prompt
+  system_prompt: null
+  max_prompt_length: 256
+  max_response_length: 128
+  train_batch_size: 1
+  val_batch_size: 1
+  return_raw_input_ids: false
+  return_raw_chat: false
+  n_samples: 1
+  filter_accuracy: true
+  filter_truncated: false
+  accuracy_lower_bound: 0.1
+  accuracy_upper_bound: 0.9
+  oversample_factor: 1
+  filter_format: true
+  zero: false
+  sample_num: -1
+  libero_single_task_id: 5
+actor_rollout_ref:
+  hybrid_engine: true
+  model:
+    vla: openvla-oft
+    action_token_len: 7
+    action_chunks_len: 8
+    resume: false
+    path: /home/ubuntu/runs/openvla_adapters/openvla-7b+libero_goal_no_noops+b8+lr-0.0001+lora-r8+dropout-0.0+lora-attn-only--13500_chkpt
+    external_lib: null
+    override_config: {}
+    enable_gradient_checkpointing: true
+    use_remove_padding: false
+    lora_rank: 4
+    lora_alpha: 32
+    target_modules: attn-only
+    base_vla_path: /home/ubuntu/16831pro_fine_tune/grpo_lite_rl/../openvla-oft/checkpoints/openvla-7b
+    train_only_action_head: true
+    load_in_8bit: true
+  actor:
+    vla: ${actor_rollout_ref.model.vla}
+    action_token_len: ${actor_rollout_ref.model.action_token_len}
+    action_chunks_len: ${actor_rollout_ref.model.action_chunks_len}
+    use_proprio: ${actor_rollout_ref.rollout.use_proprio}
+    strategy: fsdp
+    traj_mini_batch_size: 2
+    ppo_mini_batch_size: 1
+    ppo_micro_batch_size: 1
+    use_dynamic_bsz: false
+    use_remove_padding: ${actor_rollout_ref.model.use_remove_padding}
+    ppo_max_token_len_per_gpu: 20480
+    grad_clip: 1
+    clip_ratio_high: 0.28
+    clip_ratio_low: 0.2
+    entropy_coeff: 0.0
+    ppo_epochs: 1
+    shuffle: true
+    ulysses_sequence_parallel_size: 1
+    num_images_in_input: 1
+    optim:
+      lr: 5.0e-06
+      lr_warmup_steps_ratio: 0.0
+      min_lr_ratio: null
+      warmup_style: constant
+      total_training_steps: -1
+    fsdp_config:
+      wrap_policy:
+        min_num_params: 0
+      param_offload: true
+      grad_offload: true
+      optimizer_offload: true
+      fsdp_size: -1
+  ref:
+    fsdp_config:
+      param_offload: true
+      wrap_policy:
+        min_num_params: 0
+      fsdp_size: -1
+    log_prob_micro_batch_size: 2
+    log_prob_use_dynamic_bsz: ${actor_rollout_ref.actor.use_dynamic_bsz}
+    log_prob_max_token_len_per_gpu: ${actor_rollout_ref.actor.ppo_max_token_len_per_gpu}
+    ulysses_sequence_parallel_size: ${actor_rollout_ref.actor.ulysses_sequence_parallel_size}
+  rollout:
+    vla: ${actor_rollout_ref.model.vla}
+    action_chunks_len: ${actor_rollout_ref.model.action_chunks_len}
+    experiment_name: grpo_lite_libero_push_perturb
+    unnorm_key: libero_goal_no_noops
+    twin2_task_config: demo_randomized
+    twin2_ckpt_setting: ${actor_rollout_ref.rollout.twin2_task_config}
+    twin2_instruction_type: unseen
+    micro_batch_size: 1
+    val_micro_batch_size: 1
+    model_family: openvla
+    task_suite_name: libero_goal
+    num_steps_wait: 10
+    use_proprio: true
+    pretrained_checkpoint: /home/ubuntu/runs/openvla_adapters/openvla-7b+libero_goal_no_noops+b8+lr-0.0001+lora-r8+dropout-0.0+lora-attn-only--13500_chkpt
+    center_crop: true
+    max_prompt_length: 512
+    num_images_in_input: 1
+    name: hf
+    temperature: 1.6
+    top_k: -1
+    top_p: 1
+    prompt_length: ${data.max_prompt_length}
+    response_length: ${data.max_response_length}
+    dtype: bfloat16
+    gpu_memory_utilization: 0.5
+    ignore_eos: false
+    enforce_eager: true
+    free_cache_engine: true
+    load_format: dummy_dtensor
+    tensor_model_parallel_size: 1
+    max_num_batched_tokens: 8192
+    max_num_seqs: 1024
+    log_prob_micro_batch_size: 2
+    log_prob_use_dynamic_bsz: ${actor_rollout_ref.actor.use_dynamic_bsz}
+    log_prob_max_token_len_per_gpu: ${actor_rollout_ref.actor.ppo_max_token_len_per_gpu}
+    do_sample: true
+    'n': 1
+    base_vla_path: /home/ubuntu/16831pro_fine_tune/grpo_lite_rl/../openvla-oft/checkpoints/openvla-7b
+    perturb_colors: true
+    use_prompt_seg_text: false
+    use_mask_image: true
+    use_mask_from_env: true
+critic:
+  strategy: fsdp
+  optim:
+    lr: 1.0e-05
+    lr_warmup_steps_ratio: 0.0
+    min_lr_ratio: null
+    warmup_style: constant
+    total_training_steps: -1
+  model:
+    action_token_len: ${actor_rollout_ref.model.action_token_len}
+    action_chunks_len: ${actor_rollout_ref.model.action_chunks_len}
+    path: ~/models/deepseek-llm-7b-chat
+    tokenizer_path: ${actor_rollout_ref.model.path}
+    override_config: {}
+    external_lib: ${actor_rollout_ref.model.external_lib}
+    use_remove_padding: ${actor_rollout_ref.model.use_remove_padding}
+    enable_gradient_checkpointing: ${actor_rollout_ref.model.enable_gradient_checkpointing}
+    fsdp_config:
+      param_offload: ${actor_rollout_ref.actor.fsdp_config.param_offload}
+      grad_offload: ${actor_rollout_ref.actor.fsdp_config.grad_offload}
+      optimizer_offload: ${actor_rollout_ref.actor.fsdp_config.optimizer_offload}
+      wrap_policy:
+        min_num_params: 0
+      fsdp_size: -1
+    lora_rank: 0
+    lora_alpha: 32
+    target_modules: all-linear
+    type: value
+  ppo_mini_batch_size: ${actor_rollout_ref.actor.ppo_mini_batch_size}
+  ppo_micro_batch_size: 64
+  forward_micro_batch_size: ${critic.ppo_micro_batch_size}
+  use_dynamic_bsz: ${actor_rollout_ref.actor.use_dynamic_bsz}
+  ppo_max_token_len_per_gpu: 32768
+  forward_max_token_len_per_gpu: ${critic.ppo_max_token_len_per_gpu}
+  ulysses_sequence_parallel_size: ${actor_rollout_ref.actor.ulysses_sequence_parallel_size}
+  ppo_epochs: ${actor_rollout_ref.actor.ppo_epochs}
+  shuffle: ${actor_rollout_ref.actor.shuffle}
+  grad_clip: 1.0
+  cliprange_value: 0.5
+verifier:
+  type: prime
+  reward_coef: 5
+reward_model:
+  enable: true
+  strategy: fsdp
+  model:
+    action_token_len: ${actor_rollout_ref.model.action_token_len}
+    action_chunks_len: ${actor_rollout_ref.model.action_chunks_len}
+    input_tokenizer: ${actor_rollout_ref.model.path}
+    path: ~/models/FsfairX-LLaMA3-RM-v0.1
+    external_lib: ${actor_rollout_ref.model.external_lib}
+    use_remove_padding: ${actor_rollout_ref.model.use_remove_padding}
+    fsdp_config:
+      min_num_params: 0
+      param_offload: false
+  mini_batch_size: ${actor_rollout_ref.actor.ppo_mini_batch_size}
+  micro_batch_size: 64
+  max_length: null
+  ulysses_sequence_parallel_size: ${actor_rollout_ref.actor.ulysses_sequence_parallel_size}
+  use_dynamic_bsz: ${critic.use_dynamic_bsz}
+  ppo_max_token_len_per_gpu: ${actor_rollout_ref.actor.ppo_max_token_len_per_gpu}
+  forward_max_token_len_per_gpu: ${critic.forward_max_token_len_per_gpu}
+  rm_coef: 0
+  rm_type: prime
+  prime_granularity: token
+  prime_norm: batch_norm
+  prime_model:
+    input_tokenizer: ${actor_rollout_ref.model.path}
+    path: /home/wangzefan/huggingface/dpo-prm
+    ref_type: freeze
+    ref_path: /data/public/wangshuo/LongContext/model/meta-llama/Llama3.1-8b-instruct
+    external_lib: ${actor_rollout_ref.model.external_lib}
+    enable_gradient_checkpointing: ${actor_rollout_ref.model.enable_gradient_checkpointing}
+    use_remove_padding: ${actor_rollout_ref.model.use_remove_padding}
+    fsdp_config:
+      wrap_policy:
+        min_num_params: 0
+      param_offload: ${actor_rollout_ref.actor.fsdp_config.param_offload}
+      grad_offload: ${actor_rollout_ref.actor.fsdp_config.grad_offload}
+      optimizer_offload: ${actor_rollout_ref.actor.fsdp_config.optimizer_offload}
+    update: none
+    optim:
+      lr: 1.0e-06
+      lr_warmup_steps_ratio: 0.0
+      min_lr_ratio: null
+      warmup_style: constant
+      total_training_steps: -1
+      weight_decay: 0.0
+      grad_clip: 1.0
+    beta_train: 0.05
+    loss_type: ce
+algorithm:
+  gamma: 1.0
+  lam: 1.0
+  adv_estimator: grpo_lite
+  adv_params:
+    verifier_gamma: 1.0
+    reward_model_gamma: 1.0
+  kl_penalty: kl
+  kl_ctrl:
+    type: fixed
+    kl_coef: 0.0
+trainer:
+  total_epochs: 100
+  total_training_steps: null
+  project_name: RL
+  experiment_name: grpo_lite_libero_push_perturb
+  logger:
+  - console
+  - wandb
+  wandb_mode: online
+  nnodes: 1
+  n_gpus_per_node: 1
+  save_freq: 1
+  test_freq: 4
+  critic_warmup: 0
+  default_hdfs_dir: ~/experiments/gsm8k/ppo/${trainer.experiment_name}
+  default_local_dir: /home/ubuntu/runs/grpo_lite_rl_push_perturb/ckpt/RL/grpo_lite_libero_push_perturb
+  runtime_env: /home/ubuntu/16831pro_fine_tune/grpo_lite_rl/../SimpleVLA-RL/align.json
+  val_before_train: true
+  val_only: false

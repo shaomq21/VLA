@@ -1,0 +1,4 @@
+Running 2 tasks: ['push the plate to the front of the stove', 'put the bowl on the plate']
+Perturbations: color(3) + background(3) + jitter(3) + baseline, 10 per task
+
+--- Task: push the plate to the front of the stove | Perturb: color_0 ---

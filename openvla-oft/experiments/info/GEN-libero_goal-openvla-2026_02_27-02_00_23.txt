@@ -1,0 +1,34 @@
+Running 2 tasks: ['push the plate to the front of the stove', 'put the bowl on the plate']
+Perturbations: color(3) + background(3) + jitter(3) + baseline, 10 per task
+
+--- Task: push the plate to the front of the stove | Perturb: color_0 ---
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-02_00_23--openvla_oft--episode=1--success=False--task=push_the_plate_to_the_front_of_the_stove--raw_color_0.mp4
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-02_00_23--openvla_oft--episode=1--success=False--task=push_the_plate_to_the_front_of_the_stove--masked_color_0.mp4
+Saved side-by-side video: ./rollouts/2026_02_27/2026_02_27-02_00_23--openvla_oft--episode=1--success=False--task=push_the_plate_to_the_front_of_the_stove--sidebyside_color_0.mp4
+Success: False | Total: 0/1
+
+--- Task: push the plate to the front of the stove | Perturb: color_1 ---
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-02_00_23--openvla_oft--episode=2--success=False--task=push_the_plate_to_the_front_of_the_stove--raw_color_1.mp4
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-02_00_23--openvla_oft--episode=2--success=False--task=push_the_plate_to_the_front_of_the_stove--masked_color_1.mp4
+Saved side-by-side video: ./rollouts/2026_02_27/2026_02_27-02_00_23--openvla_oft--episode=2--success=False--task=push_the_plate_to_the_front_of_the_stove--sidebyside_color_1.mp4
+Success: False | Total: 0/2
+
+--- Task: push the plate to the front of the stove | Perturb: color_2 ---
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-02_00_23--openvla_oft--episode=3--success=False--task=push_the_plate_to_the_front_of_the_stove--raw_color_2.mp4
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-02_00_23--openvla_oft--episode=3--success=False--task=push_the_plate_to_the_front_of_the_stove--masked_color_2.mp4
+Saved side-by-side video: ./rollouts/2026_02_27/2026_02_27-02_00_23--openvla_oft--episode=3--success=False--task=push_the_plate_to_the_front_of_the_stove--sidebyside_color_2.mp4
+Success: False | Total: 0/3
+
+--- Task: push the plate to the front of the stove | Perturb: background_0 ---
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-02_00_23--openvla_oft--episode=4--success=False--task=push_the_plate_to_the_front_of_the_stove--raw_background_0.mp4
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-02_00_23--openvla_oft--episode=4--success=False--task=push_the_plate_to_the_front_of_the_stove--masked_background_0.mp4
+Saved side-by-side video: ./rollouts/2026_02_27/2026_02_27-02_00_23--openvla_oft--episode=4--success=False--task=push_the_plate_to_the_front_of_the_stove--sidebyside_background_0.mp4
+Success: False | Total: 0/4
+
+--- Task: push the plate to the front of the stove | Perturb: background_1 ---
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-02_00_23--openvla_oft--episode=5--success=False--task=push_the_plate_to_the_front_of_the_stove--raw_background_1.mp4
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-02_00_23--openvla_oft--episode=5--success=False--task=push_the_plate_to_the_front_of_the_stove--masked_background_1.mp4
+Saved side-by-side video: ./rollouts/2026_02_27/2026_02_27-02_00_23--openvla_oft--episode=5--success=False--task=push_the_plate_to_the_front_of_the_stove--sidebyside_background_1.mp4
+Success: False | Total: 0/5
+
+--- Task: push the plate to the front of the stove | Perturb: background_2 ---

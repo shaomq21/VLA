@@ -98,7 +98,7 @@ PYTHONPATH=/home/ubuntu/16831pro_fine_tune/LIBERO:$PYTHONPATH python experiments
   --load_in_8bit True
 
 
-
+./auto_run.sh --fast_model
 
 
 cd /home/ubuntu/16831pro_fine_tune/openvla-oft
@@ -116,7 +116,11 @@ PYTHONPATH=/home/ubuntu/16831pro_fine_tune/LIBERO:$PYTHONPATH python experiments
 
 
 
-
+cd /home/ubuntu/16831pro_fine_tune/openvla-oft
+PYTHONPATH=/home/ubuntu/16831pro_fine_tune/LIBERO:$PYTHONPATH python experiments/robot/libero/run_libero_generalization_eval.py \
+  --pretrained_checkpoint "/home/ubuntu/runs/openvla_adapters/openvla-7b+libero_goal_no_noops+b8+lr-0.0001+lora-r8+dropout-0.0+lora-attn-only--13500_chkpt" \
+  --base_vla_path "/home/ubuntu/16831pro_fine_tune/openvla-oft/checkpoints/openvla-7b" \
+  --load_in_8bit True
 
 
   cd 16831pro_fine_tune/openvla-oft/mask_processor.py
@@ -124,6 +128,24 @@ PYTHONPATH=/home/ubuntu/16831pro_fine_tune/LIBERO:$PYTHONPATH python experiments
    python experiments/robot/libero/run_single_chunk_inference.py \
    --proprio "0.144657,-0.275468,0.876451,-0.160527,0.49422,0.430039,0.738271,1" \
    --load_in_8bit True
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
