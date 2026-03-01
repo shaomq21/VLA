@@ -1,9 +1,9 @@
 """
-run_libero_generalization_eval.py
+run_libero_background_perturb_eval.py
 
-Generalization evaluation: only two tasks with perturb_colors (3 variants),
-background perturbation (3 variants), image jitter (3 variants).
-Mild perturbation intensity, similar to current perturb_colors.
+Eval with background-only perturbation: elliptical color patches.
+Two tasks: push plate to stove, put bowl on plate.
+Schedule: background(3 variants) + baseline, 4 per task.
 """
 import os
 import sys
@@ -88,9 +88,7 @@ TASK_MAX_STEPS = 150
 
 class PerturbType(str, Enum):
     NONE = "none"
-    COLOR = "color"
     BACKGROUND = "background"
-    JITTER = "jitter"
 
 
 logging.basicConfig(
@@ -101,48 +99,11 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def _apply_color_perturbation(
-    img: Union[np.ndarray, Image.Image], variant: int
-) -> Union[np.ndarray, Image.Image]:
-    """
-    Mild color perturbation. variant 0|1|2.
-    Original (variant 0): white→yellow, red→light blue.
-    Variant 1: white→pale green, red→light pink.
-    Variant 2: white→pale cyan, red→light orange.
-    """
-    arr = np.asarray(img).astype(np.float32)
-    if arr.ndim != 3 or arr.shape[-1] != 3:
-        return img
-
-    r, g, b = arr[..., 0], arr[..., 1], arr[..., 2]
-    white_mask = (r > 200) & (g > 200) & (b > 200)
-    red_mask = (r > 95) & (r >= g) & (r >= b) & ((r - np.minimum(g, b)) >= 10)
-    alpha = 0.3  # milder perturbation
-
-    if variant == 0:
-        # Original: white→yellow, red→light blue
-        arr[white_mask, :] = [255, 255, 0]
-        overlay = np.array([220.0, 235.0, 255.0], dtype=np.float32)
-    elif variant == 1:
-        # white→pale green, red→light pink
-        arr[white_mask, :] = [240, 255, 240]
-        overlay = np.array([255.0, 240.0, 245.0], dtype=np.float32)
-    else:  # variant == 2
-        # white→pale cyan, red→light orange
-        arr[white_mask, :] = [240, 255, 255]
-        overlay = np.array([255.0, 245.0, 235.0], dtype=np.float32)
-
-    arr[red_mask, :] = (1 - alpha) * arr[red_mask, :] + alpha * overlay
-
-    out = np.clip(arr, 0, 255).astype(np.uint8)
-    return Image.fromarray(out) if isinstance(img, Image.Image) else out
-
-
 def _apply_background_perturbation(
     img: Union[np.ndarray, Image.Image], variant: int, rng: np.random.Generator
 ) -> Union[np.ndarray, Image.Image]:
     """
-    KTV-style: light color patches over background. Mild intensity.
+    Background-only: soft elliptical color patches. Mild intensity.
     variant 0: warm (pink/orange), 1: cool (blue/purple), 2: mixed (green/cyan).
     """
     arr = np.asarray(img).astype(np.float32).copy()
@@ -188,45 +149,8 @@ def _apply_background_perturbation(
     return Image.fromarray(out) if isinstance(img, Image.Image) else out
 
 
-def _apply_image_jitter(
-    img: Union[np.ndarray, Image.Image], variant: int, rng: np.random.Generator
-) -> Union[np.ndarray, Image.Image]:
-    """
-    Mild image jitter. variant 0: translation, 1: rotation, 2: scale.
-    """
-    pil = Image.fromarray(np.asarray(img)) if isinstance(img, np.ndarray) else img
-    pil = pil.convert("RGB")
-    arr = np.asarray(pil)
-    h, w = arr.shape[:2]
-
-    if variant == 0:
-        # Translation ±2 px
-        dx = int(rng.integers(-2, 3))
-        dy = int(rng.integers(-2, 3))
-        out = np.roll(arr, (dy, dx), axis=(0, 1))
-    elif variant == 1:
-        # Rotation ±0.8 deg
-        angle = float(rng.uniform(-0.8, 0.8))
-        out_pil = pil.rotate(angle, resample=Image.BICUBIC, expand=False, fill=(128, 128, 128))
-        out = np.asarray(out_pil)
-    else:  # variant == 2
-        # Scale 0.98–1.02, crop center
-        s = float(rng.uniform(0.98, 1.02))
-        new_h, new_w = int(h * s), int(w * s)
-        resized = np.asarray(pil.resize((new_w, new_h), Image.Resampling.LANCZOS))
-        top = max(0, (new_h - h) // 2)
-        left = max(0, (new_w - w) // 2)
-        out = resized[top : top + h, left : left + w]
-        if out.shape[0] < h or out.shape[1] < w:
-            pad = np.full((h, w, 3), 128, dtype=np.uint8)
-            pad[: out.shape[0], : out.shape[1]] = out
-            out = pad
-
-    return Image.fromarray(out) if isinstance(img, Image.Image) else out
-
-
 @dataclass
-class GeneralizationConfig:
+class BackgroundPerturbConfig:
     model_family: str = "openvla"
     pretrained_checkpoint: Union[str, Path] = ""
     base_vla_path: Optional[str] = None
@@ -266,7 +190,7 @@ class GeneralizationConfig:
     seed: int = 7
 
 
-def _resolve_base_vla_path(cfg: GeneralizationConfig) -> None:
+def _resolve_base_vla_path(cfg: BackgroundPerturbConfig) -> None:
     base = getattr(cfg, "base_vla_path", None)
     if not base or not isinstance(base, str) or not base.strip():
         return
@@ -279,12 +203,12 @@ def _resolve_base_vla_path(cfg: GeneralizationConfig) -> None:
             logger.info("base_vla_path %s not found; using %s", base, cfg.base_vla_path)
 
 
-def _validate_config(cfg: GeneralizationConfig) -> None:
+def _validate_config(cfg: BackgroundPerturbConfig) -> None:
     assert cfg.pretrained_checkpoint, "pretrained_checkpoint must be set!"
     assert not (cfg.load_in_8bit and cfg.load_in_4bit), "Cannot use both 8-bit and 4-bit!"
 
 
-def _initialize_model(cfg: GeneralizationConfig):
+def _initialize_model(cfg: BackgroundPerturbConfig):
     model = get_model(cfg)
     proprio_projector = None
     if cfg.use_proprio:
@@ -358,15 +282,13 @@ def _mask_via_subprocess_cpu(img_pil: Image.Image, lang: str) -> Image.Image:
     env["NVIDIA_VISIBLE_DEVICES"] = ""
     for k in ["WORLD_SIZE", "RANK", "LOCAL_RANK", "LOCAL_WORLD_SIZE", "MASTER_ADDR", "MASTER_PORT"]:
         env.pop(k, None)
-    tmp_dir = tempfile.mkdtemp(prefix="gen_mask_tmp_")
+    tmp_dir = tempfile.mkdtemp(prefix="bg_perturb_mask_tmp_")
     try:
         in_path = os.path.join(tmp_dir, "in.png")
         out_path = os.path.join(tmp_dir, "out.png")
         img_pil.save(in_path)
-        # Ensure file is flushed to disk before subprocess reads it (avoids "No such file" race)
         with open(in_path, "rb") as f:
             os.fsync(f.fileno())
-        # Use shell so CUDA_VISIBLE_DEVICES is set before Python/imports run
         import shlex
         lang_safe = shlex.quote(lang)
         cmd_str = (
@@ -384,8 +306,8 @@ def _mask_via_subprocess_cpu(img_pil: Image.Image, lang: str) -> Image.Image:
         shutil.rmtree(tmp_dir, ignore_errors=True)
 
 
-def _get_mask_processor_masker(cfg: GeneralizationConfig):
-    """Lazy-load GroundedSAMMasker from mask_processor. Falls back to subprocess (vla-preprocess) if groundingdino not in current env."""
+def _get_mask_processor_masker(cfg: BackgroundPerturbConfig):
+    """Lazy-load GroundedSAMMasker. Falls back to subprocess if groundingdino not in current env."""
     global _mask_processor_masker, _use_mask_subprocess
     if _mask_processor_masker is not None:
         return _mask_processor_masker
@@ -423,7 +345,7 @@ def _save_sidebyside_video(
     os.makedirs(rollout_dir, exist_ok=True)
     processed = task_description.lower().replace(" ", "_").replace("\n", "_").replace(".", "_")[:50]
     extra = f"--{suffix}" if suffix else ""
-    mp4_path = f"{rollout_dir}/{DATE_TIME}--openvla_oft--episode={idx}--success={success}--task={processed}{extra}.mp4"
+    mp4_path = f"{rollout_dir}/{DATE_TIME}--bg_perturb--episode={idx}--success={success}--task={processed}{extra}.mp4"
     writer = imageio.get_writer(mp4_path, fps=fps)
     for raw, mask in zip(raw_images, masked_images):
         raw_np = np.asarray(raw)
@@ -443,7 +365,7 @@ def _save_sidebyside_video(
 
 
 def run_episode(
-    cfg: GeneralizationConfig,
+    cfg: BackgroundPerturbConfig,
     env,
     raw_task_description: str,
     model,
@@ -487,13 +409,9 @@ def run_episode(
                     img_np = np.stack([img_np] * 3, axis=-1)
                 img_pil = Image.fromarray(img_np)
 
-                # Apply perturbation
-                if perturb_type == PerturbType.COLOR:
-                    img_pil = _apply_color_perturbation(img_pil, perturb_variant)
-                elif perturb_type == PerturbType.BACKGROUND:
+                # Only background perturbation (elliptical color patches)
+                if perturb_type == PerturbType.BACKGROUND:
                     img_pil = _apply_background_perturbation(img_pil, perturb_variant, rng)
-                elif perturb_type == PerturbType.JITTER:
-                    img_pil = _apply_image_jitter(img_pil, perturb_variant, rng)
 
                 img_for_replay = np.asarray(img_pil)
                 replay_images.append(img_for_replay)
@@ -556,7 +474,7 @@ def run_episode(
     return success, replay_images, replay_masked_images
 
 
-def run_generalization_eval(cfg: GeneralizationConfig) -> float:
+def run_background_perturb_eval(cfg: BackgroundPerturbConfig) -> float:
     _resolve_base_vla_path(cfg)
     _validate_config(cfg)
 
@@ -572,7 +490,7 @@ def run_generalization_eval(cfg: GeneralizationConfig) -> float:
     model, action_head, proprio_projector, noisy_action_projector, processor = _initialize_model(cfg)
     resize_size = get_image_resize_size(cfg)
 
-    run_id = f"GEN-{TASK_SUITE_NAME}-{cfg.model_family}-{DATE_TIME}"
+    run_id = f"BG-PERTURB-{TASK_SUITE_NAME}-{cfg.model_family}-{DATE_TIME}"
     if cfg.run_id_note:
         run_id += f"--{cfg.run_id_note}"
     os.makedirs(cfg.local_log_dir, exist_ok=True)
@@ -584,7 +502,6 @@ def run_generalization_eval(cfg: GeneralizationConfig) -> float:
     task_suite = benchmark_dict[cfg.task_suite_name]()
     num_tasks = task_suite.n_tasks
 
-    # Find task IDs for our two tasks
     task_ids_to_run = []
     for task_id in range(num_tasks):
         task = task_suite.get_task(task_id)
@@ -598,17 +515,13 @@ def run_generalization_eval(cfg: GeneralizationConfig) -> float:
         return 0.0
 
     log_file.write(f"Running {len(task_ids_to_run)} tasks: {[d for _, d in task_ids_to_run]}\n")
-    log_file.write("Perturbations: color(3) + background(3) + jitter(3) + baseline, 10 per task\n")
+    log_file.write("Perturbations: background elliptical patches (3 variants) + baseline, 4 per task\n")
     log_file.flush()
 
-    # Perturbation schedule: perturbations first, baseline (no perturbation) last
+    # Only background perturbation (3 variants) + baseline
     schedule = []
     for v in range(3):
-        schedule.append((PerturbType.COLOR, v))
-    for v in range(3):
         schedule.append((PerturbType.BACKGROUND, v))
-    for v in range(3):
-        schedule.append((PerturbType.JITTER, v))
     schedule.append((PerturbType.NONE, 0))  # baseline at end
 
     total_episodes = 0
@@ -625,7 +538,7 @@ def run_generalization_eval(cfg: GeneralizationConfig) -> float:
         initial_states = task_suite.get_task_init_states(task_id)
 
         for sched_idx, (ptype, pvar) in enumerate(schedule):
-            label = "baseline" if ptype == PerturbType.NONE else f"{ptype.value}_{pvar}"
+            label = "baseline" if ptype == PerturbType.NONE else f"background_{pvar}"
             log_file.write(f"\n--- Task: {task_description} | Perturb: {label} ---\n")
             log_file.flush()
 
@@ -673,7 +586,7 @@ def run_generalization_eval(cfg: GeneralizationConfig) -> float:
 
 if __name__ == "__main__":
     @draccus.wrap()
-    def main(cfg: GeneralizationConfig):
-        run_generalization_eval(cfg)
+    def main(cfg: BackgroundPerturbConfig):
+        run_background_perturb_eval(cfg)
 
     main()

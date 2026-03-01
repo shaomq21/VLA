@@ -1,0 +1,52 @@
+Running 2 tasks: ['push the plate to the front of the stove', 'put the bowl on the plate']
+Perturbations: background elliptical patches (3 variants) + baseline, 4 per task
+
+--- Task: push the plate to the front of the stove | Perturb: background_0 ---
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-03_27_48--openvla_oft--episode=1--success=False--task=push_the_plate_to_the_front_of_the_stove--raw_background_0.mp4
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-03_27_48--openvla_oft--episode=1--success=False--task=push_the_plate_to_the_front_of_the_stove--masked_background_0.mp4
+Saved side-by-side video: ./rollouts/2026_02_27/2026_02_27-03_27_48--bg_perturb--episode=1--success=False--task=push_the_plate_to_the_front_of_the_stove--sidebyside_background_0.mp4
+Success: False | Total: 0/1
+
+--- Task: push the plate to the front of the stove | Perturb: background_1 ---
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-03_27_48--openvla_oft--episode=2--success=False--task=push_the_plate_to_the_front_of_the_stove--raw_background_1.mp4
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-03_27_48--openvla_oft--episode=2--success=False--task=push_the_plate_to_the_front_of_the_stove--masked_background_1.mp4
+Saved side-by-side video: ./rollouts/2026_02_27/2026_02_27-03_27_48--bg_perturb--episode=2--success=False--task=push_the_plate_to_the_front_of_the_stove--sidebyside_background_1.mp4
+Success: False | Total: 0/2
+
+--- Task: push the plate to the front of the stove | Perturb: background_2 ---
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-03_27_48--openvla_oft--episode=3--success=False--task=push_the_plate_to_the_front_of_the_stove--raw_background_2.mp4
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-03_27_48--openvla_oft--episode=3--success=False--task=push_the_plate_to_the_front_of_the_stove--masked_background_2.mp4
+Saved side-by-side video: ./rollouts/2026_02_27/2026_02_27-03_27_48--bg_perturb--episode=3--success=False--task=push_the_plate_to_the_front_of_the_stove--sidebyside_background_2.mp4
+Success: False | Total: 0/3
+
+--- Task: push the plate to the front of the stove | Perturb: baseline ---
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-03_27_48--openvla_oft--episode=4--success=False--task=push_the_plate_to_the_front_of_the_stove--raw_baseline.mp4
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-03_27_48--openvla_oft--episode=4--success=False--task=push_the_plate_to_the_front_of_the_stove--masked_baseline.mp4
+Saved side-by-side video: ./rollouts/2026_02_27/2026_02_27-03_27_48--bg_perturb--episode=4--success=False--task=push_the_plate_to_the_front_of_the_stove--sidebyside_baseline.mp4
+Success: False | Total: 0/4
+
+--- Task: put the bowl on the plate | Perturb: background_0 ---
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-03_27_48--openvla_oft--episode=5--success=False--task=put_the_bowl_on_the_plate--raw_background_0.mp4
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-03_27_48--openvla_oft--episode=5--success=False--task=put_the_bowl_on_the_plate--masked_background_0.mp4
+Saved side-by-side video: ./rollouts/2026_02_27/2026_02_27-03_27_48--bg_perturb--episode=5--success=False--task=put_the_bowl_on_the_plate--sidebyside_background_0.mp4
+Success: False | Total: 0/5
+
+--- Task: put the bowl on the plate | Perturb: background_1 ---
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-03_27_48--openvla_oft--episode=6--success=False--task=put_the_bowl_on_the_plate--raw_background_1.mp4
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-03_27_48--openvla_oft--episode=6--success=False--task=put_the_bowl_on_the_plate--masked_background_1.mp4
+Saved side-by-side video: ./rollouts/2026_02_27/2026_02_27-03_27_48--bg_perturb--episode=6--success=False--task=put_the_bowl_on_the_plate--sidebyside_background_1.mp4
+Success: False | Total: 0/6
+
+--- Task: put the bowl on the plate | Perturb: background_2 ---
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-03_27_48--openvla_oft--episode=7--success=False--task=put_the_bowl_on_the_plate--raw_background_2.mp4
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-03_27_48--openvla_oft--episode=7--success=False--task=put_the_bowl_on_the_plate--masked_background_2.mp4
+Saved side-by-side video: ./rollouts/2026_02_27/2026_02_27-03_27_48--bg_perturb--episode=7--success=False--task=put_the_bowl_on_the_plate--sidebyside_background_2.mp4
+Success: False | Total: 0/7
+
+--- Task: put the bowl on the plate | Perturb: baseline ---
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-03_27_48--openvla_oft--episode=8--success=False--task=put_the_bowl_on_the_plate--raw_baseline.mp4
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-03_27_48--openvla_oft--episode=8--success=False--task=put_the_bowl_on_the_plate--masked_baseline.mp4
+Saved side-by-side video: ./rollouts/2026_02_27/2026_02_27-03_27_48--bg_perturb--episode=8--success=False--task=put_the_bowl_on_the_plate--sidebyside_baseline.mp4
+Success: False | Total: 0/8
+
+=== Final: 0/8 = 0.00% ===

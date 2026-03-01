@@ -107,12 +107,14 @@ PYTHONPATH=. /home/ubuntu/miniconda3/envs/vla-preprocess/bin/python test_roboflo
 
 
 PYTHONPATH=/home/ubuntu/16831pro_fine_tune/LIBERO:$PYTHONPATH python experiments/robot/libero/run_libero_eval_mask.py \
-  --pretrained_checkpoint "${CKPT_DIR}" \
+  --pretrained_checkpoint "/home/ubuntu/runs/openvla_adapters/openvla-7b+libero_goal_no_noops+b8+lr-0.0001+lora-r8+dropout-0.0+lora-attn-only--13500_chkpt" \
   --base_vla_path /home/ubuntu/16831pro_fine_tune/openvla-oft/checkpoints/openvla-7b \
   --use_proprio True \
   --task_suite_name libero_goal \
-  --perturb_colors True \
-  --load_in_8bit True
+  --perturb_colors False \
+  --load_in_8bit True \
+  --perturb_bowl True
+  
 
 
 
@@ -123,11 +125,44 @@ PYTHONPATH=/home/ubuntu/16831pro_fine_tune/LIBERO:$PYTHONPATH python experiments
   --load_in_8bit True
 
 
+
+cd /home/ubuntu/16831pro_fine_tune/openvla-oft
+PYTHONPATH=/home/ubuntu/16831pro_fine_tune/LIBERO:$PYTHONPATH python experiments/robot/libero/run_libero_background_perturb_eval.py \
+  --pretrained_checkpoint "/home/ubuntu/runs/openvla_adapters/openvla-7b+libero_goal_no_noops+b8+lr-0.0001+lora-r8+dropout-0.0+lora-attn-only--13500_chkpt" \
+  --base_vla_path "/home/ubuntu/16831pro_fine_tune/openvla-oft/checkpoints/openvla-7b" \
+  --load_in_8bit True
+
+
+
+
+
+
+cd /home/ubuntu/16831pro_fine_tune/openvla-oft
+conda activate simplevla
+PYTHONPATH=. python scripts/extract_hidden_states.py \
+  --image_path /home/ubuntu/16831pro_fine_tune/zt/test_book.png \
+  --output_dir /home/ubuntu/16831pro_fine_tune/zz/output_hidden_states
+
+
+
+
+
+
+
+
+
+
+
+
+export ROBOFLOW_API_KEY="
+
+
   cd 16831pro_fine_tune/openvla-oft/mask_processor.py
 
    python experiments/robot/libero/run_single_chunk_inference.py \
    --proprio "0.144657,-0.275468,0.876451,-0.160527,0.49422,0.430039,0.738271,1" \
    --load_in_8bit True
+
 
 
 

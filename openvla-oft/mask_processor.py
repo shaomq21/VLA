@@ -102,9 +102,8 @@ def build_mask_spec_from_lang(lang: str) -> MaskSpec:
 
         if "plate" in lang:
             reds.append("plate")
-        # approximate "table region in front of the stove" -> 左边的扁方块
-        greens += ["white rectangular box on the left"]
-        print("reds,green:", reds, greens)
+        # Stove: try both "white rectangular" (light) and "stove" (LIBERO stove is dark brown/black)
+        greens += ["white rectangular box on the left", "stove"]
         return MaskSpec(red_phrases=reds, green_phrases=greens)
 
     # PUT
@@ -148,22 +147,12 @@ def build_mask_spec_from_lang(lang: str) -> MaskSpec:
         green_points_xy=[],
     )
 
-
-        print("reds,green:", reds, greens)
-
-        # your ontology remap hints (optional): cabinet/rack as "square object"; stove/plate as "flat-shaped object"
-        # NOTE: this is your earlier language rewrite requirement. For visual grounding,
-        # you might keep the literal noun ("cabinet", "rack") because it's easier to detect.
-        return MaskSpec(red_phrases=reds, green_phrases=greens)
-
     # TURN ON  (stove -> 左边的扁方块)
     if lang.startswith("turn on "):
         return MaskSpec(red_phrases=[], green_phrases=["white rectangular box on the left"])
 
-        print("reds,green:", reds, greens)
-
-        # default: no masks
-        return MaskSpec(red_phrases=[], green_phrases=[])
+    # default: no masks
+    return MaskSpec(red_phrases=[], green_phrases=[])
 
 
 # --------------------------
@@ -530,7 +519,7 @@ def main():
     sam_type = "vit_h"
     #sam_type = "vit_b"
     device = "cuda"
-    out_path = "/home/ubuntu/16831pro_fine_tune/zz/masked.png"
+    out_path = "/home/ubuntu/16831pro_fine_tune/zz/masked_cheese.png"
 
     cfg = GroundedSAMConfig(
         dino_config_path=dino_config,
@@ -539,8 +528,8 @@ def main():
         sam_type=sam_type,
         device=device,
     )
-    lang = "push the plate to the front of the stove"
-    image = "/home/ubuntu/16831pro_fine_tune/zt/1.jpg"
+    lang = "put the cream cheese in the bowl"
+    image = "/home/ubuntu/16831pro_fine_tune/zt/plate.jpg"
     masker = GroundedSAMMasker(cfg)
     img = Image.open(image).convert("RGB")
     out = masker.mask_image_from_lang(img, lang)

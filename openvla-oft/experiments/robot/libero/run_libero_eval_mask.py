@@ -189,6 +189,7 @@ class GenerateConfig:
 
     loadinfo: bool = False                           # If True: save mask images per step, action chunk and proprio to Excel
     perturb_colors: bool = False                    # If True: white→yellow, red→blue (plate/stove yellow, plate rim blue)
+    perturb_bowl: bool = False                      # If True: 图里定位深灰色→亮红
     use_mask_from_env: bool = True                  # If True: get mask from LIBERO SegmentationRenderEnv (same red/green style, no Grounded-SAM)
 
     use_wandb: bool = False                          # Whether to also log results in Weights & Biases
@@ -366,6 +367,25 @@ def process_action(action, model_family):
     return action
 
 
+def _apply_bowl_perturbation(img: Union[np.ndarray, Image.Image]) -> Union[np.ndarray, Image.Image]:
+    """图里定位深灰色像素，重设为亮红色。深灰：R≈G≈B 且亮度在 [lo, hi] 范围内。"""
+    arr = np.asarray(img).astype(np.float32)
+    if arr.ndim != 3 or arr.shape[-1] != 3:
+        return img
+    r, g, b = arr[..., 0], arr[..., 1], arr[..., 2]
+    # 深灰：三通道相近、亮度在指定范围
+    mean_rgb = (r + g + b) / 3.0
+    spread = np.maximum(np.maximum(r, g), b) - np.minimum(np.minimum(r, g), b)
+    dark_grey_mask = (spread < 50) & (mean_rgb >= 45) & (mean_rgb <= 160)
+    arr[dark_grey_mask, 0] = 255
+    arr[dark_grey_mask, 1] = 40
+    arr[dark_grey_mask, 2] = 40
+    out = np.clip(arr, 0, 255).astype(np.uint8)
+    if isinstance(img, Image.Image):
+        return Image.fromarray(out)
+    return out
+
+
 def _apply_color_perturbation(img: Union[np.ndarray, Image.Image]) -> Union[np.ndarray, Image.Image]:
     """Perturb colors: white → yellow (plate/stove), red → light blue overlay (plate rim). Returns same type as input."""
     arr = np.asarray(img).astype(np.float32)
@@ -513,6 +533,8 @@ def run_episode(
                 observation, img = prepare_observation(obs, resize_size)
                 if getattr(cfg, "perturb_colors", False):
                     img = _apply_color_perturbation(img)
+                if getattr(cfg, "perturb_bowl", False):
+                    img = _apply_bowl_perturbation(img)
                 replay_images.append(img)
 
                 if getattr(cfg, "use_mask_from_env", False):
@@ -702,7 +724,7 @@ def run_task(
             total_successes += 1
 
         # Save rollout videos (raw and masked, same fps and frame count)
-        raw_suffix = "perturbed" if getattr(cfg, "perturb_colors", False) else None
+        raw_suffix = "perturbed" if (getattr(cfg, "perturb_colors", False) or getattr(cfg, "perturb_bowl", False)) else None
         save_rollout_video(
             replay_images,
             total_episodes,
@@ -711,7 +733,7 @@ def run_task(
             log_file=log_file,
             suffix=raw_suffix,
         )
-        masked_suffix = "masked_perturbed" if getattr(cfg, "perturb_colors", False) else "masked"
+        masked_suffix = "masked_perturbed" if (getattr(cfg, "perturb_colors", False) or getattr(cfg, "perturb_bowl", False)) else "masked"
         save_rollout_video(
             replay_masked_images,
             total_episodes,

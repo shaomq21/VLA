@@ -191,8 +191,11 @@ class SegmentationRenderEnv(OffScreenRenderEnv):
         self.segmentation_id_mapping = {}
 
         for i, instance_name in enumerate(list(self.env.model.instances_to_ids.keys())):
-            if instance_name == "Panda0":
+            if instance_name in ("Panda0", "Panda", "Panda_0"):
                 self.segmentation_robot_id = i
+                break
+        if self.segmentation_robot_id is None:
+            self.segmentation_robot_id = 0  # fallback 避免 NoneType + int
 
         for i, instance_name in enumerate(list(self.env.model.instances_to_ids.keys())):
             if instance_name not in ["Panda0", "RethinkMount0", "PandaGripper0"]:

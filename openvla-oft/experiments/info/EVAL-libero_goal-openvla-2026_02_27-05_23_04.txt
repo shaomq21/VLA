@@ -1,0 +1,35 @@
+Task suite: libero_goal
+Using default initial states
+Skipping task_id=0 (in skip list): raw='open the middle drawer of the cabinet' processed='open the green masked drawer of the square object'
+Using default initial states
+Skipping task_id=1 (in skip list): raw='put the bowl on the stove' processed='put the red masked bowl on the green masked flat-shaped object'
+Using default initial states
+Skipping task_id=2 (in skip list): raw='put the wine bottle on top of the cabinet' processed='put the red masked wine bottle on on top of the green masked square object'
+Using default initial states
+Skipping task_id=3 (in skip list): raw='open the top drawer and put the bowl inside' processed='open the green masked drawer and put the bowl inside'
+Using default initial states
+Skipping task_id=4 (in skip list): raw='put the bowl on top of the cabinet' processed='put the red masked bowl on on top of the green masked square object'
+Using default initial states
+
+Task: push the plate to the front of the stove
+Starting episode 1...
+Episode error: unsupported operand type(s) for +: 'NoneType' and 'int'
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-05_23_04--openvla_oft--episode=1--success=False--task=push_the_plate_to_the_front_of_the_stove--perturbed.mp4
+Saved rollout MP4 at path ./rollouts/2026_02_27/2026_02_27-05_23_04--openvla_oft--episode=1--success=False--task=push_the_plate_to_the_front_of_the_stove--masked_perturbed.mp4
+Success: False
+# episodes completed so far: 1
+# successes: 0 (0.0%)
+Current task success rate: 0.0
+Current total success rate: 0.0
+Using default initial states
+Skipping task_id=6 (in skip list): raw='put the cream cheese in the bowl' processed='put the red masked flat-shaped object in the green masked bowl'
+Using default initial states
+Skipping task_id=7 (in skip list): raw='turn on the stove' processed='turn on the green masked flat-shaped object'
+Using default initial states
+Skipping task_id=8 (in skip list): raw='put the bowl on the plate' processed='put the red masked bowl on the green masked flat-shaped object'
+Using default initial states
+Skipping task_id=9 (in skip list): raw='put the wine bottle on the rack' processed='put the red masked wine bottle on the green masked square object'
+Final results:
+Total episodes: 1
+Total successes: 0
+Overall success rate: 0.0000 (0.0%)
